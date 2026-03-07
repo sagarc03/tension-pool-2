@@ -75,11 +75,13 @@ export default defineConfig({
         // Generate module.json for dev
         generateModuleJson(root, outDir);
 
-        // Copy templates
-        try {
-          copyDir(resolve(root, "src/templates"), resolve(outDir, "templates"));
-        } catch {
-          // No templates yet, that's fine
+        // Copy static directories
+        for (const dir of ["templates", "lang"]) {
+          try {
+            copyDir(resolve(root, "src", dir), resolve(outDir, dir));
+          } catch {
+            // Directory may not exist yet, that's fine
+          }
         }
       },
     },
