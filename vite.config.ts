@@ -25,6 +25,9 @@ function copyDir(src: string, dest: string) {
 function generateModuleJson(root: string, outDir: string) {
   const pkg = JSON.parse(readFileSync(resolve(root, "package.json"), "utf-8"));
   const foundry = pkg.foundry || {};
+  const repoUrl = pkg.repository
+    ? `https://github.com/${pkg.repository}`
+    : "";
   const moduleJson = {
     id: foundry.id || pkg.name,
     title: foundry.title || pkg.name,
@@ -35,6 +38,7 @@ function generateModuleJson(root: string, outDir: string) {
     socket: foundry.socket || false,
     esmodules: ["scripts/module.js"],
     styles: ["styles/module.css"],
+    ...(repoUrl ? { url: repoUrl } : {}),
     ...(foundry.relationships ? { relationships: foundry.relationships } : {}),
     ...(foundry.languages ? { languages: foundry.languages } : {}),
   };
