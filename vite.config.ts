@@ -1,6 +1,13 @@
 import { defineConfig } from "vite";
 import { resolve } from "path";
-import { copyFileSync, mkdirSync, readdirSync, statSync } from "fs";
+import {
+  copyFileSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  statSync,
+  writeFileSync,
+} from "fs";
 
 function copyDir(src: string, dest: string) {
   mkdirSync(dest, { recursive: true });
@@ -13,6 +20,26 @@ function copyDir(src: string, dest: string) {
       copyFileSync(srcPath, destPath);
     }
   }
+}
+
+function generateModuleJson(root: string, outDir: string) {
+  const pkg = JSON.parse(readFileSync(resolve(root, "package.json"), "utf-8"));
+  const foundry = pkg.foundry || {};
+  const moduleJson = {
+    id: foundry.id || pkg.name,
+    name: foundry.id || pkg.name,
+    title: foundry.title || pkg.name,
+    description: pkg.description || "",
+    version: pkg.version,
+    compatibility: foundry.compatibility || {},
+    socket: foundry.socket || false,
+    esmodules: ["scripts/module.js"],
+    styles: ["styles/module.css"],
+  };
+  writeFileSync(
+    resolve(outDir, "module.json"),
+    JSON.stringify(moduleJson, null, 2)
+  );
 }
 
 export default defineConfig({
@@ -38,13 +65,17 @@ export default defineConfig({
   },
   plugins: [
     {
-      name: "copy-templates",
+      name: "foundry-module",
       closeBundle() {
+        const root = import.meta.dirname!;
+        const outDir = resolve(root, "build");
+
+        // Generate module.json for dev
+        generateModuleJson(root, outDir);
+
+        // Copy templates
         try {
-          copyDir(
-            resolve(import.meta.dirname!, "src/templates"),
-            resolve(import.meta.dirname!, "build/templates")
-          );
+          copyDir(resolve(root, "src/templates"), resolve(outDir, "templates"));
         } catch {
           // No templates yet, that's fine
         }
