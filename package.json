@@ -1,6 +1,6 @@
 {
   "name": "tension-pool-2",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Tension Pool 2 is a Foundry (Re)Implementation and Evolution of the Angry GM's idea of Time Pools/Tension Pools",
   "type": "module",
   "scripts": {
@@ -16,6 +16,7 @@
   "license": "ISC",
   "foundry": {
     "id": "tension-pool-2",
+    "title": "Tension Pool 2",
     "compatibility": {
       "minimum": "13",
       "verified": "13"
