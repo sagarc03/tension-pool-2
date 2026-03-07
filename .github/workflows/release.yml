@@ -32,3 +32,5 @@ jobs:
           files: |
             dist/module.json
             dist/module.zip
+            dist/LICENSE
+            dist/README.md

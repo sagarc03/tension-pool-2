@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, mkdirSync, createWriteStream } from "fs";
+import { readFileSync, writeFileSync, mkdirSync, createWriteStream, copyFileSync, existsSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
@@ -32,8 +32,8 @@ const moduleJson = {
   url: repoUrl,
   manifest: `${repoUrl}/releases/latest/download/module.json`,
   download: `${repoUrl}/releases/download/${tag}/module.zip`,
-  license: `${repoUrl}/blob/main/LICENSE`,
-  readme: `${repoUrl}/blob/main/README.md`,
+  license: `${repoUrl}/releases/download/${tag}/LICENSE`,
+  readme: `${repoUrl}/releases/download/${tag}/README.md`,
   bugs: `${repoUrl}/issues`,
   changelog: `${repoUrl}/releases`,
   ...(foundry.relationships ? { relationships: foundry.relationships } : {}),
@@ -49,6 +49,14 @@ mkdirSync(resolve(root, "dist"), { recursive: true });
 
 // Copy module.json to dist/
 writeFileSync(resolve(root, "dist/module.json"), JSON.stringify(moduleJson, null, 2));
+
+// Copy LICENSE and README.md to dist/
+for (const file of ["LICENSE", "README.md"]) {
+  const src = resolve(root, file);
+  if (existsSync(src)) {
+    copyFileSync(src, resolve(root, "dist", file));
+  }
+}
 
 // Zip build/ contents into dist/module.zip
 const output = createWriteStream(resolve(root, "dist/module.zip"));
