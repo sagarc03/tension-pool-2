@@ -11,7 +11,12 @@
     "test:watch": "vitest"
   },
   "keywords": [],
-  "author": "",
+  "authors": [
+    {
+      "name": "sagarc03",
+      "url": "https://github.com/sagarc03"
+    }
+  ],
   "repository": "sagarc03/tension-pool-2",
   "license": "ISC",
   "foundry": {

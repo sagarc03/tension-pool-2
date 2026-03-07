@@ -21,11 +21,10 @@ const tag = `v${pkg.version}`;
 // Generate module.json
 const moduleJson = {
   id: foundry.id || pkg.name,
-  name: foundry.id || pkg.name,
   title: foundry.title || pkg.name,
   description: pkg.description || "",
   version: pkg.version,
-  authors: pkg.author ? [{ name: pkg.author }] : [],
+  authors: pkg.authors || [],
   compatibility: foundry.compatibility || {},
   socket: foundry.socket || false,
   esmodules: ["scripts/module.js"],
@@ -35,6 +34,7 @@ const moduleJson = {
   download: `${repoUrl}/releases/download/${tag}/module.zip`,
   license: pkg.license || "",
   ...(foundry.relationships ? { relationships: foundry.relationships } : {}),
+  ...(foundry.languages ? { languages: foundry.languages } : {}),
   ...(foundry.packs ? { packs: foundry.packs } : {}),
 };
 

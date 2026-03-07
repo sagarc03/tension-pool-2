@@ -27,15 +27,16 @@ function generateModuleJson(root: string, outDir: string) {
   const foundry = pkg.foundry || {};
   const moduleJson = {
     id: foundry.id || pkg.name,
-    name: foundry.id || pkg.name,
     title: foundry.title || pkg.name,
     description: pkg.description || "",
     version: pkg.version,
+    authors: pkg.authors || [],
     compatibility: foundry.compatibility || {},
     socket: foundry.socket || false,
     esmodules: ["scripts/module.js"],
     styles: ["styles/module.css"],
     ...(foundry.relationships ? { relationships: foundry.relationships } : {}),
+    ...(foundry.languages ? { languages: foundry.languages } : {}),
   };
   writeFileSync(
     resolve(outDir, "module.json"),
