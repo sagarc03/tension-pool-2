@@ -39,7 +39,7 @@ Core logic should be pure TypeScript with no Foundry dependencies — testable d
 
 ## Local Dev with Docker
 
-`docker compose up` runs Foundry VTT with `build/` mounted as the module. Requires `.env` with `FOUNDRY_USERNAME`, `FOUNDRY_PASSWORD`, `FOUNDRY_RELEASE_URL` (see `.env.example`). Named volumes cache the Foundry installation and data.
+`docker compose up` runs Foundry VTT with `build/` symlinked as the module. Requires `.env` with `FOUNDRY_USERNAME` and `FOUNDRY_PASSWORD` (see `.env.example`). An init container runs as root to fix `/data/Data` permissions before Foundry starts. Named volumes cache the Foundry installation and data.
 
 ## Release
 

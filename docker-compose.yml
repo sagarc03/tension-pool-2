@@ -1,16 +1,35 @@
 services:
+  foundry-init:
+    image: felddy/foundryvtt:release
+    entrypoint:
+      - sh
+      - -c
+      - mkdir -p /data/Data/modules /data/Data/systems /data/Data/worlds && chown -R node:node /data/Data
+    user: root
+    volumes:
+      - foundry_data:/data
+
   foundry:
     image: felddy/foundryvtt:release
+    depends_on:
+      foundry-init:
+        condition: service_completed_successfully
     ports:
       - "30000:30000"
     environment:
       - FOUNDRY_USERNAME=${FOUNDRY_USERNAME}
       - FOUNDRY_PASSWORD=${FOUNDRY_PASSWORD}
-      - FOUNDRY_RELEASE_URL=${FOUNDRY_RELEASE_URL}
     volumes:
       - foundry_install:/home/foundry
       - foundry_data:/data
-      - ./build:/data/Data/modules/tension-pool-2
+      - ./build:/module-build
+    entrypoint:
+      - sh
+      - -c
+      - |
+        rm -rf /data/Data/modules/tension-pool-2
+        ln -sfn /module-build /data/Data/modules/tension-pool-2
+        exec ./entrypoint.sh resources/app/main.mjs --port=30000 --headless --noupdate --dataPath=/data
 
 volumes:
   foundry_install:

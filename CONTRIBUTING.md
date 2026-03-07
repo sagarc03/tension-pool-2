@@ -33,10 +33,9 @@
    ```
    FOUNDRY_USERNAME=your-username
    FOUNDRY_PASSWORD=your-password
-   FOUNDRY_RELEASE_URL=https://...your-foundry-download-url...
    ```
 
-   You can find your release URL on the [Foundry VTT website](https://foundryvtt.com/) under your purchased licenses.
+   These are your [Foundry VTT website](https://foundryvtt.com/) account credentials.
 
 ## Local Development
 
