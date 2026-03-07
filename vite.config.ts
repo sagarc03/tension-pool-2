@@ -35,6 +35,7 @@ function generateModuleJson(root: string, outDir: string) {
     socket: foundry.socket || false,
     esmodules: ["scripts/module.js"],
     styles: ["styles/module.css"],
+    ...(foundry.relationships ? { relationships: foundry.relationships } : {}),
   };
   writeFileSync(
     resolve(outDir, "module.json"),
