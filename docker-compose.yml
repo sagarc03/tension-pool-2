@@ -1,0 +1,17 @@
+services:
+  foundry:
+    image: felddy/foundryvtt:release
+    ports:
+      - "30000:30000"
+    environment:
+      - FOUNDRY_USERNAME=${FOUNDRY_USERNAME}
+      - FOUNDRY_PASSWORD=${FOUNDRY_PASSWORD}
+      - FOUNDRY_RELEASE_URL=${FOUNDRY_RELEASE_URL}
+    volumes:
+      - foundry_install:/home/foundry
+      - foundry_data:/data
+      - ./build:/data/Data/modules/tension-pool-2
+
+volumes:
+  foundry_install:
+  foundry_data:
