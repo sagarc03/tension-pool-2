@@ -58,6 +58,7 @@ Hooks.once("init", () => {
     default: "skull",
     onChange: () => {
       poolApp?.render({ force: true });
+      (ui as any).notifications?.info(game.i18n!.localize("TENSION_POOL.Settings.IconTheme.RefreshRequired"));
     },
   });
 

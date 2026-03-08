@@ -4,6 +4,12 @@ const FACE_COUNTS: Record<string, number> = {
   d4: 4, d6: 6, d8: 8, d10: 10, d12: 12, d20: 20,
 };
 
+const THEME_SYMBOLS: Record<string, string> = {
+  skull: "\u2620",   // ☠
+  square: "\u2757",  // ❗
+  thunder: "\u26A1", // ⚡
+};
+
 /**
  * Custom TensionDie — configurable faces, total counts how many 1s were rolled.
  */
@@ -74,7 +80,15 @@ function updateDiceSoNicePreset(dice3d: any) {
     }
   })();
   const faces = FACE_COUNTS[diceSize] ?? 6;
-  const labels = ["!", ...Array(faces - 1).fill("")];
+  const iconTheme = (() => {
+    try {
+      return getSetting("iconTheme") || "skull";
+    } catch {
+      return "skull";
+    }
+  })();
+  const symbol = THEME_SYMBOLS[iconTheme] ?? THEME_SYMBOLS.skull;
+  const labels = [symbol, ...Array(faces - 1).fill("")];
   dice3d.addDicePreset({
     type: "dt",
     labels,
