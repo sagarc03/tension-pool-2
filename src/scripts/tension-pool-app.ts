@@ -200,7 +200,7 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
       },
     });
     if (input && input > 0) {
-      await rollTensionPool(input);
+      await rollTensionPool(Math.min(input, 50));
     }
   }
 

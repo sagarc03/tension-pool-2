@@ -22,7 +22,7 @@
   "TENSION_POOL.Roll": "Roll Tension Pool",
   "TENSION_POOL.CustomRoll.Tooltip": "Custom Roll",
   "TENSION_POOL.CustomRoll.Title": "Custom Tension Roll",
-  "TENSION_POOL.CustomRoll.Label": "Number of dice to roll",
+  "TENSION_POOL.CustomRoll.Label": "Number of dice to roll (max 50)",
   "TENSION_POOL.Clear": "Clear Tension Pool",
   "TENSION_POOL.ShowPool": "Show Tension Pool",
   "TENSION_POOL.HidePool": "Hide Tension Pool",
