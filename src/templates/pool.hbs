@@ -5,31 +5,41 @@
   <button type="button" class="ui-control fa-solid fa-minus icon" data-action="removeDie" data-tooltip="TENSION_POOL.RemoveDie" aria-label="Remove Die"></button>
 </div>
 {{/if}}
+{{#unless collapsed}}
 <div class="tp-icons" data-tooltip="{{tensionTooltip}}">
   {{#each icons}}
   <i class="{{this.class}}"></i>
   {{/each}}
 </div>
+{{/unless}}
 {{#if isGM}}
-<button type="button" class="ui-control fa-solid fa-dice-d20 icon" data-action="customRoll" data-tooltip="TENSION_POOL.CustomRoll.Tooltip" aria-label="Custom Roll"></button>
 <div class="tp-controls">
   <button type="button" class="ui-control fa-solid fa-dice icon" data-action="rollPool" data-tooltip="TENSION_POOL.Roll" aria-label="Roll Pool"></button>
   <button type="button" class="ui-control fa-solid fa-xmark icon" data-action="clearPool" data-tooltip="TENSION_POOL.Clear" aria-label="Clear Pool"></button>
+</div>
+<div class="tp-controls">
+  <button type="button" class="ui-control fa-solid fa-dice-d20 icon" data-action="customRoll" data-tooltip="TENSION_POOL.CustomRoll.Tooltip" aria-label="Custom Roll"></button>
+  <button type="button" class="ui-control {{toggleIcon}} icon" data-action="togglePool" data-tooltip="{{toggleTooltip}}" aria-label="Toggle Pool"></button>
 </div>
 {{/if}}
 {{else}}
 {{#if isGM}}
 <div class="tp-controls">
+  <button type="button" class="ui-control fa-solid fa-dice-d20 icon" data-action="customRoll" data-tooltip="TENSION_POOL.CustomRoll.Tooltip" aria-label="Custom Roll"></button>
+  <button type="button" class="ui-control {{toggleIcon}} icon" data-action="togglePool" data-tooltip="{{toggleTooltip}}" aria-label="Toggle Pool"></button>
+</div>
+<div class="tp-controls">
   <button type="button" class="ui-control fa-solid fa-dice icon" data-action="rollPool" data-tooltip="TENSION_POOL.Roll" aria-label="Roll Pool"></button>
   <button type="button" class="ui-control fa-solid fa-xmark icon" data-action="clearPool" data-tooltip="TENSION_POOL.Clear" aria-label="Clear Pool"></button>
 </div>
-<button type="button" class="ui-control fa-solid fa-dice-d20 icon" data-action="customRoll" data-tooltip="TENSION_POOL.CustomRoll.Tooltip" aria-label="Custom Roll"></button>
 {{/if}}
+{{#unless collapsed}}
 <div class="tp-icons" data-tooltip="{{tensionTooltip}}">
   {{#each icons}}
   <i class="{{this.class}}"></i>
   {{/each}}
 </div>
+{{/unless}}
 {{#if isGM}}
 <div class="tp-controls">
   <button type="button" class="ui-control fa-solid fa-plus icon" data-action="addDie" data-tooltip="TENSION_POOL.AddDie" aria-label="Add Die"></button>

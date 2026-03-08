@@ -24,6 +24,8 @@
   "TENSION_POOL.CustomRoll.Title": "Custom Tension Roll",
   "TENSION_POOL.CustomRoll.Label": "Number of dice to roll",
   "TENSION_POOL.Clear": "Clear Pool",
+  "TENSION_POOL.ShowPool": "Show Pool",
+  "TENSION_POOL.HidePool": "Hide Pool",
   "TENSION_POOL.NoTension": "No Tension",
   "TENSION_POOL.TensionCount": "{count} Tension",
   "TENSION_POOL.Complication": "Complication!",

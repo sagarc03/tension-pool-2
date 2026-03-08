@@ -20,6 +20,9 @@ interface TensionPoolContext extends foundry.applications.api.ApplicationV2.Rend
   icons: TensionPoolIcon[];
   positionRight: boolean;
   tensionTooltip: string;
+  collapsed: boolean;
+  toggleIcon: string;
+  toggleTooltip: string;
 }
 
 export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<TensionPoolContext> {
@@ -36,6 +39,7 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
       rollPool: TensionPoolApp._onRollPool,
       clearPool: TensionPoolApp._onClearPool,
       customRoll: TensionPoolApp._onCustomRoll,
+      togglePool: TensionPoolApp._onTogglePool,
     },
   };
 
@@ -48,6 +52,7 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
 
   private _resizeObserver: ResizeObserver | null = null;
   private _mutationObserver: MutationObserver | null = null;
+  private _collapsed = false;
 
   override async _onRender(_context: any, _options: any) {
     const position = (game as Game).settings!.get(MODULE_ID as any, "position" as any) as string;
@@ -146,6 +151,9 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
       icons,
       positionRight: position === "right",
       tensionTooltip,
+      collapsed: this._collapsed,
+      toggleIcon: this._collapsed ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down",
+      toggleTooltip: this._collapsed ? "TENSION_POOL.ShowPool" : "TENSION_POOL.HidePool",
     };
   }
 
@@ -182,6 +190,11 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
   static async _onClearPool(this: TensionPoolApp) {
     const settings = (game as Game).settings!;
     await settings.set(MODULE_ID as any, "diceCount" as any, 0 as any);
+  }
+
+  static async _onTogglePool(this: TensionPoolApp) {
+    this._collapsed = !this._collapsed;
+    this.render({ force: true });
   }
 
   static async _onCustomRoll(this: TensionPoolApp) {
