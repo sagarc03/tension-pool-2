@@ -68,6 +68,11 @@ Hooks.on("quenchReady", (quench: any) => {
           const value = g.settings!.get("tension-pool-2" as any, "collapsed" as any);
           expect(value).to.be.a("boolean");
         });
+
+        it("soundEnabled setting is registered", () => {
+          const value = g.settings!.get("tension-pool-2" as any, "soundEnabled" as any);
+          expect(value).to.be.a("boolean");
+        });
       });
     },
     { displayName: "Tension Pool 2: Settings" }
