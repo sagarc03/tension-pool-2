@@ -1,7 +1,8 @@
 import "../styles/module.css";
 import { TensionPoolApp, ICON_THEMES } from "./tension-pool-app.js";
 import { registerTensionDie, registerDiceSoNice } from "./tension-die.js";
-import { getSetting, registerSetting } from "./constants.js";
+import { MODULE_ID, getSetting, registerSetting } from "./constants.js";
+import { showBanner } from "./announcements.js";
 
 if (import.meta.env.DEV) {
   import("./quench.js");
@@ -185,4 +186,11 @@ Hooks.on("tensionPoolComplication", (result: any) => {
 Hooks.on("ready", () => {
   poolApp = new TensionPoolApp();
   poolApp.render({ force: true });
+
+  // Listen for announcement broadcasts from GM
+  (game as Game).socket!.on(`module.${MODULE_ID}`, (payload: any) => {
+    if (payload.action === "announcement") {
+      showBanner(payload.data);
+    }
+  });
 });
