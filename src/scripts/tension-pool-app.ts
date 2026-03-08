@@ -1,28 +1,13 @@
 import { rollTensionPool } from "./tension-die.js";
 import { getSetting, setSetting } from "./constants.js";
+import { buildPoolContext, ICON_THEMES } from "./pool-context.js";
+import type { TensionPoolContext } from "./pool-context.js";
+
+export { ICON_THEMES, buildPoolContext };
+export type { TensionPoolContext };
 
 const { ApplicationV2, HandlebarsApplicationMixin } =
   foundry.applications.api;
-
-export const ICON_THEMES: Record<string, { tension: string; noTension: string }> = {
-  skull: { tension: "fa-solid fa-skull", noTension: "fa-regular fa-skull" },
-  square: { tension: "fa-solid fa-square-exclamation", noTension: "fa-regular fa-square" },
-  thunder: { tension: "fa-solid fa-bolt", noTension: "fa-solid fa-sun" },
-};
-
-interface TensionPoolIcon {
-  class: string;
-}
-
-interface TensionPoolContext extends foundry.applications.api.ApplicationV2.RenderContext {
-  isGM: boolean;
-  icons: TensionPoolIcon[];
-  positionRight: boolean;
-  tensionTooltip: string;
-  collapsed: boolean;
-  toggleIcon: string;
-  toggleTooltip: string;
-}
 
 export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<TensionPoolContext> {
   static override DEFAULT_OPTIONS = {
@@ -120,35 +105,14 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
   override async _prepareContext(
     _options: foundry.applications.api.ApplicationV2.RenderOptions
   ) {
-    const diceCount = getSetting("diceCount");
-    const theme = getSetting("iconTheme");
-    const position = getSetting("position");
-    const collapsed = getSetting("collapsed");
-    const iconSet = ICON_THEMES[theme] ?? ICON_THEMES.skull;
-
-    const icons: TensionPoolIcon[] = [];
-    if (diceCount === 0) {
-      icons.push({ class: iconSet.noTension });
-    } else {
-      for (let i = 0; i < diceCount; i++) {
-        icons.push({ class: iconSet.tension });
-      }
-    }
-
-    const i18n = game.i18n!;
-    const tensionTooltip = diceCount === 0
-      ? i18n.localize("TENSION_POOL.NoTension")
-      : i18n.format("TENSION_POOL.TensionCount", { count: String(diceCount) });
-
-    return {
-      isGM: (game as Game).user!.isGM,
-      icons,
-      positionRight: position === "right",
-      tensionTooltip,
-      collapsed,
-      toggleIcon: collapsed ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down",
-      toggleTooltip: collapsed ? "TENSION_POOL.ShowPool" : "TENSION_POOL.HidePool",
-    };
+    return buildPoolContext(
+      getSetting("diceCount"),
+      getSetting("iconTheme"),
+      getSetting("position"),
+      getSetting("collapsed"),
+      (game as Game).user!.isGM,
+      game.i18n!,
+    );
   }
 
   static async _onAddDie(this: TensionPoolApp) {
