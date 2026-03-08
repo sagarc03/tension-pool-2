@@ -36,6 +36,7 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
 
   private _resizeObserver: ResizeObserver | null = null;
   private _mutationObserver: MutationObserver | null = null;
+  private _previousDiceCount: number = -1;
 
   override async _onRender(_context: any, _options: any) {
     const position = getSetting("position");
@@ -56,6 +57,20 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
       this._resizeObserver.observe(hotbar);
       this._mutationObserver.observe(hotbar, { childList: true, subtree: true, attributes: true });
     }
+
+    // Animate icons on dice count change
+    const currentCount = getSetting("diceCount");
+    if (this._previousDiceCount >= 0 && this._previousDiceCount !== currentCount) {
+      const icons = this.element?.querySelectorAll(".tp-icons i");
+      if (icons) {
+        const animClass = currentCount > this._previousDiceCount ? "tp-pulse" : "tp-fade";
+        icons.forEach((icon) => {
+          icon.classList.add(animClass);
+          icon.addEventListener("animationend", () => icon.classList.remove(animClass), { once: true });
+        });
+      }
+    }
+    this._previousDiceCount = currentCount;
   }
 
   override _onClose(_options: any) {
