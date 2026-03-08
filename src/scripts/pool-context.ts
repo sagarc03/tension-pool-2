@@ -48,6 +48,7 @@ export function buildPoolContext(
     tensionTooltip,
     collapsed,
     toggleIcon: collapsed ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down",
+    // Raw i18n key — Foundry's data-tooltip attribute auto-localizes it
     toggleTooltip: collapsed ? "TENSION_POOL.ShowPool" : "TENSION_POOL.HidePool",
   };
 }
