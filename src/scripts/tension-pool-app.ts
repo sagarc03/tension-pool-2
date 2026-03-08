@@ -155,7 +155,7 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
     const max = getSetting("poolSize");
     const input = await foundry.applications.api.DialogV2.prompt({
       window: { title: game.i18n!.localize("TENSION_POOL.CustomRoll.Title") },
-      content: `<form><div class="form-group"><label>${game.i18n!.localize("TENSION_POOL.CustomRoll.Label")}</label><input type="number" name="count" value="${max}" min="1" autofocus></div></form>`,
+      content: `<form><div class="form-group"><label>${game.i18n!.localize("TENSION_POOL.CustomRoll.Label")}</label><input type="number" name="count" value="${max}" min="1" max="50" autofocus></div></form>`,
       ok: {
         label: game.i18n!.localize("TENSION_POOL.Roll"),
         callback: (_event: any, button: any) => {
