@@ -117,6 +117,11 @@ Hooks.on("quenchReady", (quench: any) => {
             const btn = document.querySelector('#tension-pool [data-action="clearPool"]');
             expect(btn).to.not.be.null;
           });
+
+          it("shows custom roll button", () => {
+            const btn = document.querySelector('#tension-pool [data-action="customRoll"]');
+            expect(btn).to.not.be.null;
+          });
         });
 
         describe("Pool Manipulation", () => {

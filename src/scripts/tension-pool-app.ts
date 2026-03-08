@@ -35,6 +35,7 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
       removeDie: TensionPoolApp._onRemoveDie,
       rollPool: TensionPoolApp._onRollPool,
       clearPool: TensionPoolApp._onClearPool,
+      customRoll: TensionPoolApp._onCustomRoll,
     },
   };
 
@@ -181,6 +182,23 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
   static async _onClearPool(this: TensionPoolApp) {
     const settings = (game as Game).settings!;
     await settings.set(MODULE_ID as any, "diceCount" as any, 0 as any);
+  }
+
+  static async _onCustomRoll(this: TensionPoolApp) {
+    const max = (game as Game).settings!.get(MODULE_ID as any, "poolSize" as any) as number;
+    const input = await foundry.applications.api.DialogV2.prompt({
+      window: { title: game.i18n!.localize("TENSION_POOL.CustomRoll.Title") },
+      content: `<form><div class="form-group"><label>${game.i18n!.localize("TENSION_POOL.CustomRoll.Label")}</label><input type="number" name="count" value="${max}" min="1" autofocus></div></form>`,
+      ok: {
+        label: game.i18n!.localize("TENSION_POOL.Roll"),
+        callback: (_event: any, button: any) => {
+          return parseInt(button.form.elements.count.value, 10);
+        },
+      },
+    });
+    if (input && input > 0) {
+      await rollTensionPool(input);
+    }
   }
 
   private static async _rollAndClear(diceCount: number) {

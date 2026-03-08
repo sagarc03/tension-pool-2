@@ -50,6 +50,7 @@ Once enabled, a set of control buttons appears next to the macro hotbar. These a
 | ![GM Empty](assets/GM-Empty.png) | ![GM With Tension](assets/GM-With-Tension.png) |
 
 - **Roll** (dice icon) — Roll the current pool and clear it. Rolling with an empty pool rolls 1 die
+- **Custom Roll** (d20 icon) — Roll any number of tension dice without affecting the pool. Opens a dialog to enter the dice count. Useful for one-off rolls outside the normal pool flow
 - **Clear** (x icon) — Empty the pool without rolling
 - **+** — Add a die to the pool
 - **-** — Remove a die from the pool
