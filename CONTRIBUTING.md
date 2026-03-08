@@ -96,8 +96,6 @@ scripts/
 
 - **Settings as state** — The current dice count (`diceCount`) is stored as a world-level setting. This means changes propagate to all clients via Foundry's built-in setting sync. The `onChange` callback re-renders the UI.
 
-- **`root: true` template behavior** — When the template has a single root element (e.g., non-GM view with only `.tp-icons`), that element replaces the `#tension-pool` app element. CSS accounts for this with `#tension-pool:not(:has(.tp-icons))`.
-
 - **Client-side icon theming** — Chat messages use `data-tp-icon` attributes instead of hardcoded FA classes. A `renderChatMessage` hook resolves these to the client's chosen icon theme.
 
 ### Hooks

@@ -52,6 +52,7 @@ Once enabled, a set of control buttons appears next to the macro hotbar. These a
 - **Roll** (dice icon) — Roll the current pool and clear it. Rolling with an empty pool rolls 1 die
 - **Custom Roll** (d20 icon) — Roll any number of tension dice without affecting the pool. Opens a dialog to enter the dice count. Useful for one-off rolls outside the normal pool flow
 - **Clear** (x icon) — Empty the pool without rolling
+- **Toggle** (chevron icon) — Hide or show the tension pool display. The collapsed state is saved per-client
 - **+** — Add a die to the pool
 - **-** — Remove a die from the pool
 
@@ -67,7 +68,7 @@ Players see the tension pool icons next to the hotbar, showing how many dice are
 |---|---|
 | ![Player Empty](assets/Player-Empty.png) | ![Player With Tension](assets/Player-With-Tension.png) |
 
-Players cannot add, remove, or roll dice. They can only watch the tension build.
+Players cannot add, remove, or roll dice. They can only watch the tension build. Players can use the **Toggle** button (chevron icon) to hide or show the tension pool display.
 
 ## Settings
 
