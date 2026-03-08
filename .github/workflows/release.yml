@@ -35,6 +35,7 @@ jobs:
             dist/module.zip
             dist/LICENSE
             dist/README.md
+            dist/THIRD_PARTY_ASSETS.md
 
       - name: Publish to Foundry VTT
         run: |
