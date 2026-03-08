@@ -1,11 +1,11 @@
 {
   "name": "tension-pool-2",
   "packageManager": "pnpm@8.7.5",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Tension Pool 2 is a Foundry (Re)Implementation and Evolution of the Angry GM's idea of Time Pools/Tension Pools",
   "type": "module",
   "scripts": {
-    "dev": "vite build --watch",
+    "dev": "vite build --watch --mode development",
     "build": "vite build",
     "release": "node scripts/release.mjs",
     "test": "vitest run",
