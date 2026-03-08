@@ -61,7 +61,7 @@ export default defineConfig(({ mode }) => ({
         );
 
         // Copy static directories
-        for (const dir of ["templates", "lang"]) {
+        for (const dir of ["templates", "lang", "assets"]) {
           try {
             copyDir(resolve(root, "src", dir), resolve(outDir, dir));
           } catch {

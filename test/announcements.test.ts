@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 // Mock Foundry globals
 const mockSettings = new Map<string, any>([
+  ["soundEnabled", true],
   ["addDieSound", "sounds/lock.wav"],
   ["removeDieSound", "sounds/notify.wav"],
   ["rollSound", "sounds/drums.wav"],

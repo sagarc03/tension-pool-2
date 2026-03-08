@@ -8,6 +8,7 @@ type SettingsMap = {
   complicationMacro: string;
   diceCount: number;
   collapsed: boolean;
+  soundEnabled: boolean;
   addDieSound: string;
   removeDieSound: string;
   rollSound: string;

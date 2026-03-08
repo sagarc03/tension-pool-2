@@ -31,6 +31,8 @@
   "TENSION_POOL.Complication": "Complication!",
   "TENSION_POOL.Safe": "Safe... for now.",
   "TENSION_POOL.RollResult": "Rolling {count} tension dice...",
+  "TENSION_POOL.Settings.SoundEnabled.Name": "Enable Sounds",
+  "TENSION_POOL.Settings.SoundEnabled.Hint": "Play sound effects for tension pool events.",
   "TENSION_POOL.Settings.AddDieSound.Name": "Add Die Sound",
   "TENSION_POOL.Settings.AddDieSound.Hint": "Sound effect when a die is added to the pool. Use a file path or leave default.",
   "TENSION_POOL.Settings.RemoveDieSound.Name": "Remove Die Sound",

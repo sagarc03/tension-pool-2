@@ -23,7 +23,7 @@ mkdirSync(resolve(root, "dist"), { recursive: true });
 writeFileSync(resolve(root, "dist/module.json"), JSON.stringify(moduleJson, null, 2));
 
 // Copy LICENSE and README.md to dist/
-for (const file of ["LICENSE", "README.md"]) {
+for (const file of ["LICENSE", "README.md", "THIRD_PARTY_ASSETS.md"]) {
   const src = resolve(root, file);
   if (existsSync(src)) {
     copyFileSync(src, resolve(root, "dist", file));

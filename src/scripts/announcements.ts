@@ -2,6 +2,12 @@ import { MODULE_ID, getSetting } from "./constants.js";
 
 export type AnnouncementType = "rise" | "ease" | "break" | "fade";
 
+const DEFAULT_SOUNDS: Record<string, string> = {
+  rise: "modules/tension-pool-2/assets/sounds/freesound_community-pearl-mlx-16-floor-tom-104999.mp3",
+  ease: "modules/tension-pool-2/assets/sounds/diogodasilvasimoes-magical-notification-tone-soft-fantasy-digital-alert-438278.mp3",
+  break: "modules/tension-pool-2/assets/sounds/soundreality-evil-bell-343686.mp3",
+};
+
 interface AnnouncementData {
   type: AnnouncementType;
   current: number;
@@ -46,11 +52,12 @@ export function showBanner(data: AnnouncementData): void {
  * Play a sound effect and broadcast to all clients.
  */
 export function playSound(type: AnnouncementType): void {
+  if (!getSetting("soundEnabled")) return;
   const src = (() => {
     switch (type) {
-      case "rise": return getSetting("addDieSound");
-      case "ease": return getSetting("removeDieSound");
-      case "break": return getSetting("rollSound");
+      case "rise": return getSetting("addDieSound") || DEFAULT_SOUNDS.rise;
+      case "ease": return getSetting("removeDieSound") || DEFAULT_SOUNDS.ease;
+      case "break": return getSetting("rollSound") || DEFAULT_SOUNDS.break;
       case "fade": return "";
     }
   })();

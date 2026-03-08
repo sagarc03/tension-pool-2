@@ -130,6 +130,10 @@ Hooks.on("tensionPoolComplication", (result) => { /* fires only on complications
 
 Both hooks receive the same result object described above.
 
+## Third-Party Assets
+
+This module includes sound effects used under the [Pixabay Content License](https://pixabay.com/service/license-summary/). See [THIRD_PARTY_ASSETS.md](THIRD_PARTY_ASSETS.md) for full attribution.
+
 ## License
 
 [MIT](LICENSE)

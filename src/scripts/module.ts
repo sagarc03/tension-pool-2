@@ -110,6 +110,15 @@ Hooks.once("init", () => {
     },
   });
 
+  registerSetting("soundEnabled", {
+    name: "TENSION_POOL.Settings.SoundEnabled.Name",
+    hint: "TENSION_POOL.Settings.SoundEnabled.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+  });
+
   registerSetting("addDieSound", {
     name: "TENSION_POOL.Settings.AddDieSound.Name",
     hint: "TENSION_POOL.Settings.AddDieSound.Hint",
@@ -117,7 +126,7 @@ Hooks.once("init", () => {
     config: true,
     type: String,
     filePicker: "audio",
-    default: "sounds/lock.wav",
+    default: "modules/tension-pool-2/assets/sounds/freesound_community-pearl-mlx-16-floor-tom-104999.mp3",
   });
 
   registerSetting("removeDieSound", {
@@ -127,7 +136,7 @@ Hooks.once("init", () => {
     config: true,
     type: String,
     filePicker: "audio",
-    default: "sounds/notify.wav",
+    default: "modules/tension-pool-2/assets/sounds/diogodasilvasimoes-magical-notification-tone-soft-fantasy-digital-alert-438278.mp3",
   });
 
   registerSetting("rollSound", {
@@ -137,7 +146,7 @@ Hooks.once("init", () => {
     config: true,
     type: String,
     filePicker: "audio",
-    default: "sounds/drums.wav",
+    default: "modules/tension-pool-2/assets/sounds/soundreality-evil-bell-343686.mp3",
   });
 });
 
