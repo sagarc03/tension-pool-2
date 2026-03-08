@@ -26,13 +26,26 @@ The more dice in the pool, the higher the chance of a complication. Players can 
 
 ## Installation
 
-1. In Foundry VTT, go to **Add-on Modules** > **Install Module**
-2. Paste the following manifest URL:
+### From the Add-on Module Browser
+
+1. In the Foundry VTT setup screen, go to the **Add-on Modules** tab
+2. Click **Install Module**
+3. Search for **"Tension Pool 2"** in the module browser
+4. Click **Install**
+
+### Using Manifest URL
+
+1. In the Foundry VTT setup screen, go to the **Add-on Modules** tab
+2. Click **Install Module**
+3. Paste the following URL into the **Manifest URL** field at the bottom of the window:
    ```
    https://github.com/sagarc03/tension-pool-2/releases/latest/download/module.json
    ```
-3. Click **Install**
-4. Enable "Tension Pool 2" in your world's module settings
+4. Click **Install**
+
+### Activating the Module
+
+Once installed, launch your world, open **Settings** > **Manage Modules**, enable **Tension Pool 2**, and click **Save Module Settings**.
 
 ## Compatibility
 
