@@ -68,7 +68,7 @@
 }
 
 .tension-pool-roll .tp-die-hit {
-  color: #e74c3c;
+  color: #991b1b;
 }
 
 .tension-pool-roll .tp-die-miss {
@@ -77,7 +77,7 @@
 }
 
 .tension-pool-roll .tp-result-hit {
-  color: #e74c3c;
+  color: #991b1b;
   font-size: 18px;
 }
 
@@ -169,7 +169,7 @@
   font-weight: bold;
 }
 
-.tp-announce-rise { color: #e67e22; }
+.tp-announce-rise { color: #e74c3c; }
 .tp-announce-break { color: #c0392b; }
 .tp-announce-ease { color: #2ecc71; }
 .tp-announce-fade { color: #7f8c8d; }
