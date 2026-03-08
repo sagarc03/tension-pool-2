@@ -19,23 +19,23 @@
 </div>
 {{/if}}
 {{/unless}}
-{{#if isGM}}
 <div class="tp-controls">
+  {{#if isGM}}
   {{#unless collapsed}}
   <button type="button" class="ui-control fa-solid fa-dice-d20 icon" data-action="customRoll" data-tooltip="TENSION_POOL.CustomRoll.Tooltip" aria-label="Custom Roll"></button>
   {{/unless}}
+  {{/if}}
   <button type="button" class="ui-control {{toggleIcon}} icon" data-action="togglePool" data-tooltip="{{toggleTooltip}}" aria-label="Toggle Pool"></button>
 </div>
-{{/if}}
 {{else}}
-{{#if isGM}}
 <div class="tp-controls">
+  {{#if isGM}}
   {{#unless collapsed}}
   <button type="button" class="ui-control fa-solid fa-dice-d20 icon" data-action="customRoll" data-tooltip="TENSION_POOL.CustomRoll.Tooltip" aria-label="Custom Roll"></button>
   {{/unless}}
+  {{/if}}
   <button type="button" class="ui-control {{toggleIcon}} icon" data-action="togglePool" data-tooltip="{{toggleTooltip}}" aria-label="Toggle Pool"></button>
 </div>
-{{/if}}
 {{#unless collapsed}}
 {{#if isGM}}
 <div class="tp-controls">
