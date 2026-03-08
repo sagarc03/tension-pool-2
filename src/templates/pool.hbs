@@ -17,19 +17,27 @@
   <button type="button" class="ui-control fa-solid fa-dice icon" data-action="rollPool" data-tooltip="TENSION_POOL.Roll" aria-label="Roll Pool"></button>
   <button type="button" class="ui-control fa-solid fa-xmark icon" data-action="clearPool" data-tooltip="TENSION_POOL.Clear" aria-label="Clear Pool"></button>
 </div>
-<button type="button" class="ui-control fa-solid fa-dice-d20 icon" data-action="customRoll" data-tooltip="TENSION_POOL.CustomRoll.Tooltip" aria-label="Custom Roll"></button>
 {{/if}}
 {{/unless}}
 {{#if isGM}}
-<button type="button" class="ui-control {{toggleIcon}} icon" data-action="togglePool" data-tooltip="{{toggleTooltip}}" aria-label="Toggle Pool"></button>
+<div class="tp-controls">
+  {{#unless collapsed}}
+  <button type="button" class="ui-control fa-solid fa-dice-d20 icon" data-action="customRoll" data-tooltip="TENSION_POOL.CustomRoll.Tooltip" aria-label="Custom Roll"></button>
+  {{/unless}}
+  <button type="button" class="ui-control {{toggleIcon}} icon" data-action="togglePool" data-tooltip="{{toggleTooltip}}" aria-label="Toggle Pool"></button>
+</div>
 {{/if}}
 {{else}}
 {{#if isGM}}
-<button type="button" class="ui-control {{toggleIcon}} icon" data-action="togglePool" data-tooltip="{{toggleTooltip}}" aria-label="Toggle Pool"></button>
+<div class="tp-controls">
+  {{#unless collapsed}}
+  <button type="button" class="ui-control fa-solid fa-dice-d20 icon" data-action="customRoll" data-tooltip="TENSION_POOL.CustomRoll.Tooltip" aria-label="Custom Roll"></button>
+  {{/unless}}
+  <button type="button" class="ui-control {{toggleIcon}} icon" data-action="togglePool" data-tooltip="{{toggleTooltip}}" aria-label="Toggle Pool"></button>
+</div>
 {{/if}}
 {{#unless collapsed}}
 {{#if isGM}}
-<button type="button" class="ui-control fa-solid fa-dice-d20 icon" data-action="customRoll" data-tooltip="TENSION_POOL.CustomRoll.Tooltip" aria-label="Custom Roll"></button>
 <div class="tp-controls">
   <button type="button" class="ui-control fa-solid fa-dice icon" data-action="rollPool" data-tooltip="TENSION_POOL.Roll" aria-label="Roll Pool"></button>
   <button type="button" class="ui-control fa-solid fa-xmark icon" data-action="clearPool" data-tooltip="TENSION_POOL.Clear" aria-label="Clear Pool"></button>
