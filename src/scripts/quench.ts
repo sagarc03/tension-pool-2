@@ -63,6 +63,11 @@ Hooks.on("quenchReady", (quench: any) => {
           const value = g.settings!.get("tension-pool-2" as any, "complicationMacro" as any);
           expect(value).to.be.a("string");
         });
+
+        it("collapsed setting is registered", () => {
+          const value = g.settings!.get("tension-pool-2" as any, "collapsed" as any);
+          expect(value).to.be.a("boolean");
+        });
       });
     },
     { displayName: "Tension Pool 2: Settings" }
@@ -93,6 +98,11 @@ Hooks.on("quenchReady", (quench: any) => {
         it("has tooltip direction set", () => {
           const el = document.getElementById("tension-pool");
           expect(el!.getAttribute("data-tooltip-direction")).to.be.oneOf(["LEFT", "RIGHT"]);
+        });
+
+        it("shows toggle button for all users", () => {
+          const btn = document.querySelector('#tension-pool [data-action="togglePool"]');
+          expect(btn).to.not.be.null;
         });
       });
 
