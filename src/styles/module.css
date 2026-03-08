@@ -168,3 +168,8 @@
   font-size: 18px;
   font-weight: bold;
 }
+
+.tp-announce-rise { color: #e74c3c; }
+.tp-announce-break { color: #e74c3c; }
+.tp-announce-ease { color: #2ecc71; }
+.tp-announce-fade { color: #7f8c8d; }

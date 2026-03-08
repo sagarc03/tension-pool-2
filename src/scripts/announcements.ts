@@ -82,7 +82,7 @@ export async function postAnnouncementChat(data: AnnouncementData): Promise<void
   }
 
   await ChatMessage.create({
-    content: `<div class="tension-pool-announce">${content}</div>`,
+    content: `<div class="tension-pool-announce tp-announce-${data.type}">${content}</div>`,
     speaker: { alias: i18n.localize("TENSION_POOL.Title") },
   } as any);
 }
