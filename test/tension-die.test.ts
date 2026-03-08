@@ -38,6 +38,8 @@ Object.assign(globalThis, {
   game: {
     settings: {
       get: (_module: string, key: string) => mockSettings.get(key) ?? (key === "diceSize" ? "d6" : undefined),
+      set: vi.fn(),
+      register: vi.fn(),
     },
     modules: { get: () => undefined },
     user: { id: "user1", isGM: true },

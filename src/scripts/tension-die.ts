@@ -1,4 +1,4 @@
-const MODULE_ID = "tension-pool-2";
+import { MODULE_ID, getSetting } from "./constants.js";
 
 const FACE_COUNTS: Record<string, number> = {
   d4: 4, d6: 6, d8: 8, d10: 10, d12: 12, d20: 20,
@@ -22,7 +22,7 @@ export class TensionDie extends foundry.dice.terms.Die {
 
   private static _getDiceSize(): string {
     try {
-      return (game as Game).settings!.get(MODULE_ID as any, "diceSize" as any) as string || "d6";
+      return getSetting("diceSize") || "d6";
     } catch {
       return "d6";
     }
@@ -68,7 +68,7 @@ export function registerDiceSoNice(dice3d: any) {
 function updateDiceSoNicePreset(dice3d: any) {
   const diceSize = (() => {
     try {
-      return (game as Game).settings!.get(MODULE_ID as any, "diceSize" as any) as string || "d6";
+      return getSetting("diceSize") || "d6";
     } catch {
       return "d6";
     }
@@ -112,7 +112,7 @@ export async function rollTensionPool(diceCount: number): Promise<TensionRollRes
     await (game as any).dice3d.showForRoll(roll, game.user, true);
   } else {
     // Use standard dice when DSN is not present
-    const diceSize = (game as Game).settings!.get(MODULE_ID as any, "diceSize" as any) as string || "d6";
+    const diceSize = getSetting("diceSize") || "d6";
     const roll = new Roll(`${diceCount}${diceSize}`) as any;
     await roll.evaluate();
     results = roll.terms[0].results.map((r: any) => r.result).sort();

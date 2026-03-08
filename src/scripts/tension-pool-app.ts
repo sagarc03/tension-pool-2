@@ -1,9 +1,8 @@
 import { rollTensionPool } from "./tension-die.js";
+import { getSetting, setSetting } from "./constants.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } =
   foundry.applications.api;
-
-const MODULE_ID = "tension-pool-2";
 
 export const ICON_THEMES: Record<string, { tension: string; noTension: string }> = {
   skull: { tension: "fa-solid fa-skull", noTension: "fa-regular fa-skull" },
@@ -53,7 +52,7 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
   private _mutationObserver: MutationObserver | null = null;
 
   override async _onRender(_context: any, _options: any) {
-    const position = (game as Game).settings!.get(MODULE_ID as any, "position" as any) as string;
+    const position = getSetting("position");
     this.element?.setAttribute("data-tooltip-direction", position === "right" ? "RIGHT" : "LEFT");
     this._positionNextToHotbar();
 
@@ -87,10 +86,7 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
     if (!hotbar) return;
 
     const el = this.element as HTMLElement;
-    const position = (game as Game).settings!.get(
-      MODULE_ID as any,
-      "position" as any
-    ) as string;
+    const position = getSetting("position");
 
     const hotbarLeft = hotbar.offsetLeft;
     const hotbarWidth = hotbar.offsetWidth;
@@ -124,10 +120,10 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
   override async _prepareContext(
     _options: foundry.applications.api.ApplicationV2.RenderOptions
   ) {
-    const settings = (game as Game).settings!;
-    const diceCount = settings.get(MODULE_ID as any, "diceCount" as any) as number;
-    const theme = settings.get(MODULE_ID as any, "iconTheme" as any) as string;
-    const position = settings.get(MODULE_ID as any, "position" as any) as string;
+    const diceCount = getSetting("diceCount");
+    const theme = getSetting("iconTheme");
+    const position = getSetting("position");
+    const collapsed = getSetting("collapsed");
     const iconSet = ICON_THEMES[theme] ?? ICON_THEMES.skull;
 
     const icons: TensionPoolIcon[] = [];
@@ -149,21 +145,20 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
       icons,
       positionRight: position === "right",
       tensionTooltip,
-      collapsed: settings.get(MODULE_ID as any, "collapsed" as any) as boolean,
-      toggleIcon: settings.get(MODULE_ID as any, "collapsed" as any) ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down",
-      toggleTooltip: settings.get(MODULE_ID as any, "collapsed" as any) ? "TENSION_POOL.ShowPool" : "TENSION_POOL.HidePool",
+      collapsed,
+      toggleIcon: collapsed ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down",
+      toggleTooltip: collapsed ? "TENSION_POOL.ShowPool" : "TENSION_POOL.HidePool",
     };
   }
 
   static async _onAddDie(this: TensionPoolApp) {
-    const settings = (game as Game).settings!;
-    const current = settings.get(MODULE_ID as any, "diceCount" as any) as number;
-    const max = settings.get(MODULE_ID as any, "poolSize" as any) as number;
+    const current = getSetting("diceCount");
+    const max = getSetting("poolSize");
     const newCount = current + 1;
 
     if (newCount > max) return;
 
-    await settings.set(MODULE_ID as any, "diceCount" as any, newCount as any);
+    await setSetting("diceCount", newCount);
 
     // Auto-roll when pool is full
     if (newCount >= max) {
@@ -172,32 +167,28 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
   }
 
   static async _onRemoveDie(this: TensionPoolApp) {
-    const settings = (game as Game).settings!;
-    const current = settings.get(MODULE_ID as any, "diceCount" as any) as number;
+    const current = getSetting("diceCount");
     if (current > 0) {
-      await settings.set(MODULE_ID as any, "diceCount" as any, current - 1 as any);
+      await setSetting("diceCount", current - 1);
     }
   }
 
   static async _onRollPool(this: TensionPoolApp) {
-    const settings = (game as Game).settings!;
-    const current = settings.get(MODULE_ID as any, "diceCount" as any) as number;
+    const current = getSetting("diceCount");
     await TensionPoolApp._rollAndClear(Math.max(current, 1));
   }
 
   static async _onClearPool(this: TensionPoolApp) {
-    const settings = (game as Game).settings!;
-    await settings.set(MODULE_ID as any, "diceCount" as any, 0 as any);
+    await setSetting("diceCount", 0);
   }
 
   static async _onTogglePool(this: TensionPoolApp) {
-    const settings = (game as Game).settings!;
-    const current = settings.get(MODULE_ID as any, "collapsed" as any) as boolean;
-    await settings.set(MODULE_ID as any, "collapsed" as any, !current as any);
+    const current = getSetting("collapsed");
+    await setSetting("collapsed", !current);
   }
 
   static async _onCustomRoll(this: TensionPoolApp) {
-    const max = (game as Game).settings!.get(MODULE_ID as any, "poolSize" as any) as number;
+    const max = getSetting("poolSize");
     const input = await foundry.applications.api.DialogV2.prompt({
       window: { title: game.i18n!.localize("TENSION_POOL.CustomRoll.Title") },
       content: `<form><div class="form-group"><label>${game.i18n!.localize("TENSION_POOL.CustomRoll.Label")}</label><input type="number" name="count" value="${max}" min="1" autofocus></div></form>`,
@@ -215,6 +206,6 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
 
   private static async _rollAndClear(diceCount: number) {
     await rollTensionPool(diceCount);
-    await (game as Game).settings!.set(MODULE_ID as any, "diceCount" as any, 0 as any);
+    await setSetting("diceCount", 0);
   }
 }

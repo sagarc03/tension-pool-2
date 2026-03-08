@@ -1,6 +1,7 @@
 import "../styles/module.css";
 import { TensionPoolApp, ICON_THEMES } from "./tension-pool-app.js";
 import { registerTensionDie, registerDiceSoNice } from "./tension-die.js";
+import { getSetting, registerSetting } from "./constants.js";
 
 if (import.meta.env.DEV) {
   import("./quench.js");
@@ -13,7 +14,7 @@ Hooks.once("init", () => {
 
   registerTensionDie();
 
-  (game as Game).settings!.register("tension-pool-2" as any, "position" as any, {
+  registerSetting("position", {
     name: "TENSION_POOL.Settings.Position.Name",
     hint: "TENSION_POOL.Settings.Position.Hint",
     scope: "client",
@@ -27,9 +28,9 @@ Hooks.once("init", () => {
     onChange: () => {
       poolApp?.render({ force: true });
     },
-  } as any);
+  });
 
-  (game as Game).settings!.register("tension-pool-2" as any, "poolSize" as any, {
+  registerSetting("poolSize", {
     name: "TENSION_POOL.Settings.PoolSize.Name",
     hint: "TENSION_POOL.Settings.PoolSize.Hint",
     scope: "world",
@@ -40,9 +41,9 @@ Hooks.once("init", () => {
     onChange: () => {
       poolApp?.render({ force: true });
     },
-  } as any);
+  });
 
-  (game as Game).settings!.register("tension-pool-2" as any, "iconTheme" as any, {
+  registerSetting("iconTheme", {
     name: "TENSION_POOL.Settings.IconTheme.Name",
     hint: "TENSION_POOL.Settings.IconTheme.Hint",
     scope: "client",
@@ -57,9 +58,9 @@ Hooks.once("init", () => {
     onChange: () => {
       poolApp?.render({ force: true });
     },
-  } as any);
+  });
 
-  (game as Game).settings!.register("tension-pool-2" as any, "diceSize" as any, {
+  registerSetting("diceSize", {
     name: "TENSION_POOL.Settings.DiceSize.Name",
     hint: "TENSION_POOL.Settings.DiceSize.Hint",
     scope: "world",
@@ -77,18 +78,18 @@ Hooks.once("init", () => {
     onChange: () => {
       (ui as any).notifications?.info(game.i18n!.localize("TENSION_POOL.Settings.DiceSize.RefreshRequired"));
     },
-  } as any);
+  });
 
-  (game as Game).settings!.register("tension-pool-2" as any, "complicationMacro" as any, {
+  registerSetting("complicationMacro", {
     name: "TENSION_POOL.Settings.ComplicationMacro.Name",
     hint: "TENSION_POOL.Settings.ComplicationMacro.Hint",
     scope: "world",
     config: true,
     type: String,
     default: "",
-  } as any);
+  });
 
-  (game as Game).settings!.register("tension-pool-2" as any, "diceCount" as any, {
+  registerSetting("diceCount", {
     scope: "world",
     config: false,
     type: Number,
@@ -96,9 +97,9 @@ Hooks.once("init", () => {
     onChange: () => {
       poolApp?.render({ force: true });
     },
-  } as any);
+  });
 
-  (game as Game).settings!.register("tension-pool-2" as any, "collapsed" as any, {
+  registerSetting("collapsed", {
     scope: "client",
     config: false,
     type: Boolean,
@@ -106,7 +107,7 @@ Hooks.once("init", () => {
     onChange: () => {
       poolApp?.render({ force: true });
     },
-  } as any);
+  });
 });
 
 // @ts-expect-error — diceSoNiceReady is registered by Dice So Nice at runtime
@@ -114,14 +115,16 @@ Hooks.once("diceSoNiceReady", (dice3d: any) => {
   registerDiceSoNice(dice3d);
 });
 
-// Resolve tension icons in chat messages based on each client's icon theme
+// Resolve tension icons in chat messages based on each client's icon theme.
+// Foundry V13 passes `html` as an HTMLElement directly,
+// but some versions/hooks pass a jQuery-like array.
 Hooks.on("renderChatMessage", (_message: any, html: any) => {
   const icons = html[0]?.querySelectorAll?.("[data-tp-icon]")
     ?? html.querySelectorAll?.("[data-tp-icon]")
     ?? [];
   if (!icons.length) return;
 
-  const theme = (game as Game).settings!.get("tension-pool-2" as any, "iconTheme" as any) as string;
+  const theme = getSetting("iconTheme");
   const iconSet = ICON_THEMES[theme] ?? ICON_THEMES.skull;
 
   for (const el of icons) {
@@ -137,7 +140,7 @@ Hooks.on("renderChatMessage", (_message: any, html: any) => {
 // @ts-expect-error — custom hook not in Foundry's HookConfig
 Hooks.on("tensionPoolComplication", (result: any) => {
   if (!(game as Game).user!.isGM) return;
-  const setting = (game as Game).settings!.get("tension-pool-2" as any, "complicationMacro" as any) as string;
+  const setting = getSetting("complicationMacro");
   if (!setting) return;
   const macroNames = setting.split(",").map((s: string) => s.trim()).filter(Boolean);
   for (const name of macroNames) {
