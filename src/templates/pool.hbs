@@ -1,3 +1,37 @@
-<div class="tension-pool-greeting">
-  <p>{{greeting}}</p>
+{{#if positionRight}}
+{{#if isGM}}
+<div class="tp-controls">
+  <button type="button" class="ui-control fa-solid fa-plus icon" data-action="addDie" data-tooltip="TENSION_POOL.AddDie" aria-label="Add Die"></button>
+  <button type="button" class="ui-control fa-solid fa-minus icon" data-action="removeDie" data-tooltip="TENSION_POOL.RemoveDie" aria-label="Remove Die"></button>
 </div>
+{{/if}}
+<div class="tp-icons" data-tooltip="{{tensionTooltip}}">
+  {{#each icons}}
+  <i class="{{this.class}}"></i>
+  {{/each}}
+</div>
+{{#if isGM}}
+<div class="tp-controls">
+  <button type="button" class="ui-control fa-solid fa-dice icon" data-action="rollPool" data-tooltip="TENSION_POOL.Roll" aria-label="Roll Pool"></button>
+  <button type="button" class="ui-control fa-solid fa-xmark icon" data-action="clearPool" data-tooltip="TENSION_POOL.Clear" aria-label="Clear Pool"></button>
+</div>
+{{/if}}
+{{else}}
+{{#if isGM}}
+<div class="tp-controls">
+  <button type="button" class="ui-control fa-solid fa-dice icon" data-action="rollPool" data-tooltip="TENSION_POOL.Roll" aria-label="Roll Pool"></button>
+  <button type="button" class="ui-control fa-solid fa-xmark icon" data-action="clearPool" data-tooltip="TENSION_POOL.Clear" aria-label="Clear Pool"></button>
+</div>
+{{/if}}
+<div class="tp-icons" data-tooltip="{{tensionTooltip}}">
+  {{#each icons}}
+  <i class="{{this.class}}"></i>
+  {{/each}}
+</div>
+{{#if isGM}}
+<div class="tp-controls">
+  <button type="button" class="ui-control fa-solid fa-plus icon" data-action="addDie" data-tooltip="TENSION_POOL.AddDie" aria-label="Add Die"></button>
+  <button type="button" class="ui-control fa-solid fa-minus icon" data-action="removeDie" data-tooltip="TENSION_POOL.RemoveDie" aria-label="Remove Die"></button>
+</div>
+{{/if}}
+{{/if}}
