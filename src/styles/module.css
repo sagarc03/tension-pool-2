@@ -14,6 +14,10 @@
   gap: 8px;
 }
 
+#tension-pool .tp-wrapper[data-position="right"] {
+  flex-direction: row-reverse;
+}
+
 #tension-pool .tp-controls {
   display: flex;
   flex-direction: column;
