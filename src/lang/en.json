@@ -1,3 +1,8 @@
 {
-  "TENSION_POOL.Title": "Tension Pool 2"
+  "TENSION_POOL.Title": "Tension Pool 2",
+  "TENSION_POOL.Greeting": "Welcome to Tension Pool 2!",
+  "TENSION_POOL.Settings.Position.Name": "Window Position",
+  "TENSION_POOL.Settings.Position.Hint": "Position the Tension Pool window relative to the macro hotbar.",
+  "TENSION_POOL.Settings.Position.Left": "Left of Hotbar",
+  "TENSION_POOL.Settings.Position.Right": "Right of Hotbar"
 }

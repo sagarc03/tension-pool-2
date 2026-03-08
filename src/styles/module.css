@@ -1,1 +1,18 @@
 /* Tension Pool 2 styles */
+
+#tension-pool {
+  position: fixed;
+  z-index: 70;
+  pointer-events: auto;
+  background: var(--color-cool-5-90, rgba(11, 10, 19, 0.9));
+  border: 1px solid var(--color-cool-4, #302831);
+  border-radius: 8px;
+  padding: 6px 8px;
+  color: var(--color-light-1, #f7f3e8);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-12);
+}
+
+#tension-pool .tension-pool-greeting p {
+  margin: 0;
+}
