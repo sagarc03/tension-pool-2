@@ -35,3 +35,24 @@ jobs:
             dist/module.zip
             dist/LICENSE
             dist/README.md
+
+      - name: Publish to Foundry VTT
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          REPO="https://github.com/${{ github.repository }}"
+          curl -s -X POST \
+            -H "Content-Type: application/json" \
+            -H "Authorization: ${{ secrets.FOUNDRY_PACKAGE_RELEASE_TOKEN }}" \
+            -d "{
+              \"id\": \"tension-pool-2\",
+              \"release\": {
+                \"version\": \"${VERSION}\",
+                \"manifest\": \"${REPO}/releases/latest/download/module.json\",
+                \"notes\": \"${REPO}/releases/tag/${GITHUB_REF_NAME}\",
+                \"compatibility\": {
+                  \"minimum\": \"13\",
+                  \"verified\": \"13\"
+                }
+              }
+            }" \
+            https://foundryvtt.com/_api/packages/release_version/ | jq .
