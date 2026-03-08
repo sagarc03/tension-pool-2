@@ -18,6 +18,6 @@ export function setSetting<K extends keyof SettingsMap>(key: K, value: SettingsM
   return (game as Game).settings!.set(MODULE_ID as any, key as any, value as any) as Promise<SettingsMap[K]>;
 }
 
-export function registerSetting<K extends keyof SettingsMap>(key: K, config: any): void {
+export function registerSetting<K extends keyof SettingsMap>(key: K, config: Record<string, unknown>): void {
   (game as Game).settings!.register(MODULE_ID as any, key as any, config);
 }
