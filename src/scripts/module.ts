@@ -116,6 +116,7 @@ Hooks.once("init", () => {
     scope: "world",
     config: true,
     type: String,
+    filePicker: "audio",
     default: "sounds/lock.wav",
   });
 
@@ -125,6 +126,7 @@ Hooks.once("init", () => {
     scope: "world",
     config: true,
     type: String,
+    filePicker: "audio",
     default: "sounds/notify.wav",
   });
 
@@ -134,6 +136,7 @@ Hooks.once("init", () => {
     scope: "world",
     config: true,
     type: String,
+    filePicker: "audio",
     default: "sounds/drums.wav",
   });
 });
