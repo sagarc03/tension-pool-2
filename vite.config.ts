@@ -48,7 +48,10 @@ function generateModuleJson(root: string, outDir: string) {
   );
 }
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  define: {
+    "import.meta.env.DEV": JSON.stringify(mode === "development"),
+  },
   build: {
     outDir: "build",
     emptyOutDir: true,
@@ -90,4 +93,4 @@ export default defineConfig({
       },
     },
   ],
-});
+}));
