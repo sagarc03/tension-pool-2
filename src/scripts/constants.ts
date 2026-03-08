@@ -8,6 +8,9 @@ type SettingsMap = {
   complicationMacro: string;
   diceCount: number;
   collapsed: boolean;
+  addDieSound: string;
+  removeDieSound: string;
+  rollSound: string;
 };
 
 export function getSetting<K extends keyof SettingsMap>(key: K): SettingsMap[K] {

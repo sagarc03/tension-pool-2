@@ -108,6 +108,33 @@ Hooks.once("init", () => {
       poolApp?.render({ force: true });
     },
   });
+
+  registerSetting("addDieSound", {
+    name: "TENSION_POOL.Settings.AddDieSound.Name",
+    hint: "TENSION_POOL.Settings.AddDieSound.Hint",
+    scope: "world",
+    config: true,
+    type: String,
+    default: "sounds/lock.wav",
+  });
+
+  registerSetting("removeDieSound", {
+    name: "TENSION_POOL.Settings.RemoveDieSound.Name",
+    hint: "TENSION_POOL.Settings.RemoveDieSound.Hint",
+    scope: "world",
+    config: true,
+    type: String,
+    default: "sounds/notify.wav",
+  });
+
+  registerSetting("rollSound", {
+    name: "TENSION_POOL.Settings.RollSound.Name",
+    hint: "TENSION_POOL.Settings.RollSound.Hint",
+    scope: "world",
+    config: true,
+    type: String,
+    default: "sounds/drums.wav",
+  });
 });
 
 // @ts-expect-error — diceSoNiceReady is registered by Dice So Nice at runtime
