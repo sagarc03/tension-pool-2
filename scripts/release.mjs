@@ -36,7 +36,14 @@ const moduleJson = {
   readme: `${repoUrl}/releases/download/${tag}/README.md`,
   bugs: `${repoUrl}/issues`,
   changelog: `${repoUrl}/releases`,
-  ...(foundry.relationships ? { relationships: foundry.relationships } : {}),
+  ...(foundry.relationships ? {
+    relationships: Object.fromEntries(
+      Object.entries(foundry.relationships).map(([key, deps]) => [
+        key,
+        deps.filter((dep) => dep.id !== "quench"),
+      ]).filter(([, deps]) => deps.length > 0)
+    ),
+  } : {}),
   ...(foundry.languages ? { languages: foundry.languages } : {}),
   ...(foundry.packs ? { packs: foundry.packs } : {}),
 };

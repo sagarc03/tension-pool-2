@@ -10,7 +10,7 @@
     "declaration": false,
     "outDir": "./build",
     "rootDir": "./src",
-    "types": ["@league-of-foundry-developers/foundry-vtt-types"]
+    "types": ["@league-of-foundry-developers/foundry-vtt-types", "vite/client"]
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "build", "dist", "test"]

@@ -1,3 +1,6 @@
+export { };
+
+// @ts-expect-error quench module registers this hook at runtime
 Hooks.on("quenchReady", (quench: any) => {
   quench.registerBatch(
     "tension-pool-2.basic",
