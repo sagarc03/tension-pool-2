@@ -85,3 +85,86 @@
   color: #2ecc71;
   font-size: 18px;
 }
+
+/* Announcement banner — slides down from top */
+.tp-announcement {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  padding: 12px 32px;
+  background: rgba(11, 10, 19, 0.85);
+  border-bottom: 2px solid rgb(48, 40, 49);
+  border-radius: 0 0 8px 8px;
+  animation: tp-slide-in 0.3s ease-out, tp-fade-out 0.5s ease-in 1.5s forwards;
+  pointer-events: none;
+}
+
+.tp-announcement-text {
+  color: #e0d6c8;
+  font-size: 20px;
+  font-weight: bold;
+  text-shadow: 0 0 8px rgba(255, 200, 0, 0.4);
+}
+
+/* Dramatic overlay — centered, larger, pulsing */
+.tp-announcement-dramatic {
+  top: 30%;
+  padding: 24px 48px;
+  background: rgba(11, 10, 19, 0.92);
+  border: 2px solid #e74c3c;
+  border-radius: 8px;
+  animation: tp-dramatic-in 0.4s ease-out, tp-fade-out 0.6s ease-in 2.4s forwards;
+}
+
+.tp-announcement-dramatic .tp-announcement-text {
+  color: #e74c3c;
+  font-size: 32px;
+  text-shadow: 0 0 16px rgba(231, 76, 60, 0.6);
+}
+
+/* Icon pulse animation — applied to pool icons after add */
+@keyframes tp-icon-pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+#tension-pool .tp-icons i.tp-pulse {
+  animation: tp-icon-pulse 0.5s ease-in-out;
+}
+
+/* Icon fade animation — applied to pool icons after remove */
+@keyframes tp-icon-fade {
+  0% { opacity: 1; }
+  50% { opacity: 0.2; }
+  100% { opacity: 1; }
+}
+
+#tension-pool .tp-icons i.tp-fade {
+  animation: tp-icon-fade 0.4s ease-in-out;
+}
+
+@keyframes tp-slide-in {
+  from { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+  to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
+@keyframes tp-dramatic-in {
+  from { transform: translateX(-50%) scale(0.8); opacity: 0; }
+  to { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+@keyframes tp-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Chat announcement styling */
+.tension-pool-announce {
+  text-align: center;
+  padding: 4px 0;
+  font-size: 14px;
+  color: #e0d6c8;
+}
