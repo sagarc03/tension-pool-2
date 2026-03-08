@@ -223,6 +223,140 @@ Hooks.on("quenchReady", (quench: any) => {
   );
 
   quench.registerBatch(
+    "tension-pool-2.announcements",
+    (context: any) => {
+      const { describe, it, expect, before, after } = context;
+      const g = game as Game;
+
+      if (g.user!.isGM) {
+        describe("Sound Settings", () => {
+          it("addDieSound setting is registered", () => {
+            const value = g.settings!.get("tension-pool-2" as any, "addDieSound" as any);
+            expect(value).to.be.a("string");
+          });
+
+          it("removeDieSound setting is registered", () => {
+            const value = g.settings!.get("tension-pool-2" as any, "removeDieSound" as any);
+            expect(value).to.be.a("string");
+          });
+
+          it("rollSound setting is registered", () => {
+            const value = g.settings!.get("tension-pool-2" as any, "rollSound" as any);
+            expect(value).to.be.a("string");
+          });
+        });
+
+        describe("Announcement Banners", function (this: any) {
+          this.timeout(10000);
+          let originalCount: number;
+
+          before(async () => {
+            originalCount = g.settings!.get("tension-pool-2" as any, "diceCount" as any) as number;
+            await g.settings!.set("tension-pool-2" as any, "diceCount" as any, 0 as any);
+            await wait();
+          });
+
+          after(async () => {
+            await g.settings!.set("tension-pool-2" as any, "diceCount" as any, originalCount as any);
+            await wait();
+            // Clean up any leftover banners
+            document.querySelectorAll(".tp-announcement").forEach((el) => el.remove());
+          });
+
+          it("add die shows a banner", async () => {
+            await g.settings!.set("tension-pool-2" as any, "diceCount" as any, 0 as any);
+            await wait();
+            clickAction("addDie");
+            await wait(1000);
+            const banner = document.querySelector(".tp-announcement");
+            expect(banner).to.not.be.null;
+            expect(banner!.textContent).to.include("1/");
+          });
+
+          it("add die posts a chat message", async () => {
+            await g.settings!.set("tension-pool-2" as any, "diceCount" as any, 1 as any);
+            await wait();
+            const messageCountBefore = g.messages!.size;
+            clickAction("addDie");
+            await wait(2000);
+            const messageCountAfter = g.messages!.size;
+            expect(messageCountAfter).to.be.greaterThan(messageCountBefore);
+          });
+
+          it("remove die shows a banner", async () => {
+            await g.settings!.set("tension-pool-2" as any, "diceCount" as any, 2 as any);
+            await wait();
+            // Clean up previous banners
+            document.querySelectorAll(".tp-announcement").forEach((el) => el.remove());
+            clickAction("removeDie");
+            await wait(1000);
+            const banner = document.querySelector(".tp-announcement");
+            expect(banner).to.not.be.null;
+            expect(banner!.textContent).to.include("1/");
+          });
+
+          it("clear pool posts a chat message", async () => {
+            await g.settings!.set("tension-pool-2" as any, "diceCount" as any, 2 as any);
+            await wait();
+            const messageCountBefore = g.messages!.size;
+            clickAction("clearPool");
+            await wait(2000);
+            const messageCountAfter = g.messages!.size;
+            expect(messageCountAfter).to.be.greaterThan(messageCountBefore);
+          });
+
+          it("roll shows dramatic banner", async () => {
+            await g.settings!.set("tension-pool-2" as any, "diceCount" as any, 2 as any);
+            await wait();
+            // Clean up previous banners
+            document.querySelectorAll(".tp-announcement").forEach((el) => el.remove());
+            clickAction("rollPool");
+            await wait(1000);
+            const banner = document.querySelector(".tp-announcement-dramatic");
+            expect(banner).to.not.be.null;
+            await wait(5000);
+          });
+        });
+
+        describe("Icon Animations", function (this: any) {
+          this.timeout(10000);
+          let originalCount: number;
+
+          before(async () => {
+            originalCount = g.settings!.get("tension-pool-2" as any, "diceCount" as any) as number;
+          });
+
+          after(async () => {
+            await g.settings!.set("tension-pool-2" as any, "diceCount" as any, originalCount as any);
+            await wait();
+          });
+
+          it("icons get tp-pulse class when die added", async () => {
+            await g.settings!.set("tension-pool-2" as any, "diceCount" as any, 1 as any);
+            await wait();
+            clickAction("addDie");
+            await wait(300);
+            const pulsing = document.querySelector("#tension-pool .tp-icons i.tp-pulse");
+            expect(pulsing).to.not.be.null;
+            await wait(2000);
+          });
+
+          it("icons get tp-fade class when die removed", async () => {
+            await g.settings!.set("tension-pool-2" as any, "diceCount" as any, 3 as any);
+            await wait();
+            clickAction("removeDie");
+            await wait(300);
+            const fading = document.querySelector("#tension-pool .tp-icons i.tp-fade");
+            expect(fading).to.not.be.null;
+            await wait(2000);
+          });
+        });
+      }
+    },
+    { displayName: "Tension Pool 2: Announcements" }
+  );
+
+  quench.registerBatch(
     "tension-pool-2.tension-die",
     (context: any) => {
       const { describe, it, expect } = context;
