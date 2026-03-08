@@ -1,3 +1,4 @@
+<div class="tp-wrapper">
 {{#if positionRight}}
 {{#unless collapsed}}
 {{#if isGM}}
@@ -16,32 +17,24 @@
   <button type="button" class="ui-control fa-solid fa-dice icon" data-action="rollPool" data-tooltip="TENSION_POOL.Roll" aria-label="Roll Pool"></button>
   <button type="button" class="ui-control fa-solid fa-xmark icon" data-action="clearPool" data-tooltip="TENSION_POOL.Clear" aria-label="Clear Pool"></button>
 </div>
-<div class="tp-controls">
-  <button type="button" class="ui-control fa-solid fa-dice-d20 icon" data-action="customRoll" data-tooltip="TENSION_POOL.CustomRoll.Tooltip" aria-label="Custom Roll"></button>
+<button type="button" class="ui-control fa-solid fa-dice-d20 icon" data-action="customRoll" data-tooltip="TENSION_POOL.CustomRoll.Tooltip" aria-label="Custom Roll"></button>
 {{/if}}
 {{/unless}}
 {{#if isGM}}
-  <button type="button" class="ui-control {{toggleIcon}} icon" data-action="togglePool" data-tooltip="{{toggleTooltip}}" aria-label="Toggle Pool"></button>
-{{#unless collapsed}}
-</div>
-{{/unless}}
+<button type="button" class="ui-control {{toggleIcon}} icon" data-action="togglePool" data-tooltip="{{toggleTooltip}}" aria-label="Toggle Pool"></button>
 {{/if}}
 {{else}}
 {{#if isGM}}
+<button type="button" class="ui-control {{toggleIcon}} icon" data-action="togglePool" data-tooltip="{{toggleTooltip}}" aria-label="Toggle Pool"></button>
+{{/if}}
 {{#unless collapsed}}
-<div class="tp-controls">
-  <button type="button" class="ui-control fa-solid fa-dice-d20 icon" data-action="customRoll" data-tooltip="TENSION_POOL.CustomRoll.Tooltip" aria-label="Custom Roll"></button>
-{{/unless}}
-  <button type="button" class="ui-control {{toggleIcon}} icon" data-action="togglePool" data-tooltip="{{toggleTooltip}}" aria-label="Toggle Pool"></button>
-{{#unless collapsed}}
-</div>
+{{#if isGM}}
+<button type="button" class="ui-control fa-solid fa-dice-d20 icon" data-action="customRoll" data-tooltip="TENSION_POOL.CustomRoll.Tooltip" aria-label="Custom Roll"></button>
 <div class="tp-controls">
   <button type="button" class="ui-control fa-solid fa-dice icon" data-action="rollPool" data-tooltip="TENSION_POOL.Roll" aria-label="Roll Pool"></button>
   <button type="button" class="ui-control fa-solid fa-xmark icon" data-action="clearPool" data-tooltip="TENSION_POOL.Clear" aria-label="Clear Pool"></button>
 </div>
-{{/unless}}
 {{/if}}
-{{#unless collapsed}}
 <div class="tp-icons" data-tooltip="{{tensionTooltip}}">
   {{#each icons}}
   <i class="{{this.class}}"></i>
@@ -55,3 +48,4 @@
 {{/if}}
 {{/unless}}
 {{/if}}
+</div>

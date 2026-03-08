@@ -97,6 +97,16 @@ Hooks.once("init", () => {
       poolApp?.render({ force: true });
     },
   } as any);
+
+  (game as Game).settings!.register("tension-pool-2" as any, "collapsed" as any, {
+    scope: "client",
+    config: false,
+    type: Boolean,
+    default: false,
+    onChange: () => {
+      poolApp?.render({ force: true });
+    },
+  } as any);
 });
 
 // @ts-expect-error — diceSoNiceReady is registered by Dice So Nice at runtime

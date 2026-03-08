@@ -45,14 +45,12 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
 
   static override PARTS = {
     pool: {
-      root: true,
       template: "modules/tension-pool-2/templates/pool.hbs",
     },
   };
 
   private _resizeObserver: ResizeObserver | null = null;
   private _mutationObserver: MutationObserver | null = null;
-  private _collapsed = false;
 
   override async _onRender(_context: any, _options: any) {
     const position = (game as Game).settings!.get(MODULE_ID as any, "position" as any) as string;
@@ -151,9 +149,9 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
       icons,
       positionRight: position === "right",
       tensionTooltip,
-      collapsed: this._collapsed,
-      toggleIcon: this._collapsed ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down",
-      toggleTooltip: this._collapsed ? "TENSION_POOL.ShowPool" : "TENSION_POOL.HidePool",
+      collapsed: settings.get(MODULE_ID as any, "collapsed" as any) as boolean,
+      toggleIcon: settings.get(MODULE_ID as any, "collapsed" as any) ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down",
+      toggleTooltip: settings.get(MODULE_ID as any, "collapsed" as any) ? "TENSION_POOL.ShowPool" : "TENSION_POOL.HidePool",
     };
   }
 
@@ -193,8 +191,9 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
   }
 
   static async _onTogglePool(this: TensionPoolApp) {
-    this._collapsed = !this._collapsed;
-    this.render({ force: true });
+    const settings = (game as Game).settings!;
+    const current = settings.get(MODULE_ID as any, "collapsed" as any) as boolean;
+    await settings.set(MODULE_ID as any, "collapsed" as any, !current as any);
   }
 
   static async _onCustomRoll(this: TensionPoolApp) {
