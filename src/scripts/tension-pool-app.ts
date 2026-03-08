@@ -1,5 +1,6 @@
 import { rollTensionPool } from "./tension-die.js";
 import { getSetting, setSetting } from "./constants.js";
+import { announce } from "./announcements.js";
 import { buildPoolContext, ICON_THEMES } from "./pool-context.js";
 import type { TensionPoolContext } from "./pool-context.js";
 
@@ -126,23 +127,32 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
 
     // Auto-roll when pool is full
     if (newCount >= max) {
+      await announce("break", newCount, max);
       await TensionPoolApp._rollAndClear(max);
+    } else {
+      await announce("rise", newCount, max);
     }
   }
 
   static async _onRemoveDie(this: TensionPoolApp) {
     const current = getSetting("diceCount");
     if (current > 0) {
+      const max = getSetting("poolSize");
       await setSetting("diceCount", current - 1);
+      await announce("ease", current - 1, max);
     }
   }
 
   static async _onRollPool(this: TensionPoolApp) {
     const current = getSetting("diceCount");
+    const max = getSetting("poolSize");
+    await announce("break", current, max);
     await TensionPoolApp._rollAndClear(Math.max(current, 1));
   }
 
   static async _onClearPool(this: TensionPoolApp) {
+    const max = getSetting("poolSize");
+    await announce("fade", 0, max);
     await setSetting("diceCount", 0);
   }
 
@@ -164,6 +174,7 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
       },
     });
     if (input && input > 0) {
+      await announce("break", 0, max);
       await rollTensionPool(Math.min(input, 50));
     }
   }
