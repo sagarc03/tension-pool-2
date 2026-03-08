@@ -132,7 +132,7 @@ export async function rollTensionPool(diceCount: number): Promise<TensionRollRes
 
   const outcome = hasComplication
     ? `<strong class="tp-result-hit">${i18n.localize("TENSION_POOL.Complication")}</strong>`
-    : `<em class="tp-result-safe">${i18n.localize("TENSION_POOL.Safe")}</em>`;
+    : `<strong class="tp-result-safe">${i18n.localize("TENSION_POOL.Safe")}</strong>`;
 
   await ChatMessage.create({
     content: `
