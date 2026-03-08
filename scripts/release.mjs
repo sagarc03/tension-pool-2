@@ -40,7 +40,7 @@ const moduleJson = {
     relationships: Object.fromEntries(
       Object.entries(foundry.relationships).map(([key, deps]) => [
         key,
-        deps.filter((dep) => dep.id !== "quench"),
+        Array.isArray(deps) ? deps.filter((dep) => dep.id !== "quench") : deps,
       ]).filter(([, deps]) => deps.length > 0)
     ),
   } : {}),
