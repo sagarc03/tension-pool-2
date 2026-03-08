@@ -169,7 +169,7 @@
   font-weight: bold;
 }
 
-.tp-announce-rise { color: #e74c3c; }
-.tp-announce-break { color: #e74c3c; }
+.tp-announce-rise { color: #e67e22; }
+.tp-announce-break { color: #c0392b; }
 .tp-announce-ease { color: #2ecc71; }
 .tp-announce-fade { color: #7f8c8d; }
