@@ -56,10 +56,7 @@ Hooks.once("init", () => {
       thunder: "TENSION_POOL.Settings.IconTheme.Thunder",
     },
     default: "skull",
-    onChange: () => {
-      poolApp?.render({ force: true });
-      (ui as any).notifications?.info(game.i18n!.localize("TENSION_POOL.Settings.IconTheme.RefreshRequired"));
-    },
+    requiresReload: true,
   });
 
   registerSetting("diceSize", {
@@ -77,9 +74,7 @@ Hooks.once("init", () => {
       d20: "d20",
     },
     default: "d6",
-    onChange: () => {
-      (ui as any).notifications?.info(game.i18n!.localize("TENSION_POOL.Settings.DiceSize.RefreshRequired"));
-    },
+    requiresReload: true,
   });
 
   registerSetting("complicationMacro", {
