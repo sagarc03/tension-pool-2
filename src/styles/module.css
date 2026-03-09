@@ -48,6 +48,12 @@
 }
 
 
+/* CSS-driven collapse: hide pool content instantly without a full re-render */
+#tension-pool.tp-collapsed .tp-icons,
+#tension-pool.tp-collapsed .tp-controls:not(:first-child) {
+  display: none;
+}
+
 /* Override faded-ui: fade the whole group in on hover, not individual children */
 #tension-pool.faded-ui:hover {
   opacity: 1;

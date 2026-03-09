@@ -174,7 +174,11 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
 
   static async _onTogglePool(this: TensionPoolApp) {
     const current = getSetting("collapsed");
-    await setSetting("collapsed", !current);
+    const next = !current;
+    // Toggle CSS class immediately for instant visual feedback,
+    // then persist to settings (which triggers a full re-render in the background).
+    this.element?.classList.toggle("tp-collapsed", next);
+    await setSetting("collapsed", next);
   }
 
   static async _onCustomRoll(this: TensionPoolApp) {
