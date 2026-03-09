@@ -157,12 +157,8 @@ Hooks.once("diceSoNiceReady", (dice3d: any) => {
 });
 
 // Resolve tension icons in chat messages based on each client's icon theme.
-// Foundry V13 passes `html` as an HTMLElement directly,
-// but some versions/hooks pass a jQuery-like array.
-Hooks.on("renderChatMessage", (_message: any, html: any) => {
-  const icons = html[0]?.querySelectorAll?.("[data-tp-icon]")
-    ?? html.querySelectorAll?.("[data-tp-icon]")
-    ?? [];
+Hooks.on("renderChatMessageHTML", (_message: ChatMessage, html: HTMLElement) => {
+  const icons = html.querySelectorAll("[data-tp-icon]");
   if (!icons.length) return;
 
   const theme = getSetting("iconTheme");
