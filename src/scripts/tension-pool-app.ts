@@ -38,6 +38,19 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
   private _resizeObserver: ResizeObserver | null = null;
   private _mutationObserver: MutationObserver | null = null;
   private _previousDiceCount: number = -1;
+  private _renderDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+  /**
+   * Debounced render — batches rapid setting changes (e.g. fast add/remove)
+   * into a single re-render after 100ms of quiet.
+   */
+  debouncedRender() {
+    if (this._renderDebounceTimer) clearTimeout(this._renderDebounceTimer);
+    this._renderDebounceTimer = setTimeout(() => {
+      this._renderDebounceTimer = null;
+      this.render({ force: true });
+    }, 100);
+  }
 
   override async _onRender(_context: any, _options: any) {
     const position = getSetting("position");

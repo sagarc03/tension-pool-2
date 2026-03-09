@@ -27,7 +27,7 @@ Hooks.once("init", () => {
     },
     default: "left",
     onChange: () => {
-      poolApp?.render({ force: true });
+      poolApp?.debouncedRender();
     },
   });
 
@@ -40,7 +40,7 @@ Hooks.once("init", () => {
     default: 6,
     range: { min: 1, max: 20, step: 1 },
     onChange: () => {
-      poolApp?.render({ force: true });
+      poolApp?.debouncedRender();
     },
   });
 
@@ -92,7 +92,7 @@ Hooks.once("init", () => {
     type: Number,
     default: 0,
     onChange: () => {
-      poolApp?.render({ force: true });
+      poolApp?.debouncedRender();
     },
   });
 
@@ -102,7 +102,7 @@ Hooks.once("init", () => {
     type: Boolean,
     default: false,
     onChange: () => {
-      poolApp?.render({ force: true });
+      poolApp?.debouncedRender();
     },
   });
 
