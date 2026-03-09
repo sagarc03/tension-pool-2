@@ -18,6 +18,7 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
       frame: false,
       positioned: false,
     },
+    nonDismissible: true,
     actions: {
       addDie: TensionPoolApp._onAddDie,
       removeDie: TensionPoolApp._onRemoveDie,
