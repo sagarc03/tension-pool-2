@@ -41,7 +41,10 @@ export function showBanner(data: AnnouncementData): void {
     }
   })();
 
-  container.innerHTML = `<span class="tp-announcement-text">${text}</span>`;
+  const span = document.createElement("span");
+  span.classList.add("tp-announcement-text");
+  span.textContent = text;
+  container.appendChild(span);
   document.getElementById("interface")?.appendChild(container);
 
   const duration = isDramatic ? 3000 : 2000;

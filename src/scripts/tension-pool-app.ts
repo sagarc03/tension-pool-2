@@ -92,6 +92,7 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
   }
 
   private _onDragStart(event: PointerEvent) {
+    if ((event.target as HTMLElement).closest("button")) return;
     const el = this.element as HTMLElement;
     if (!el) return;
 

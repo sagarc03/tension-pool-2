@@ -1,4 +1,4 @@
-import { MODULE_ID, getSetting } from "./constants.js";
+import { MODULE_ID, getSetting, safeGetSetting } from "./constants.js";
 
 const FACE_COUNTS: Record<string, number> = {
   d4: 4, d6: 6, d8: 8, d10: 10, d12: 12, d20: 20,
@@ -27,11 +27,7 @@ export class TensionDie extends foundry.dice.terms.Die {
   }
 
   private static _getDiceSize(): string {
-    try {
-      return getSetting("diceSize") || "d6";
-    } catch {
-      return "d6";
-    }
+    return safeGetSetting("diceSize", "d6");
   }
 }
 
@@ -72,21 +68,9 @@ export function registerDiceSoNice(dice3d: any) {
  * Update the Dice So Nice preset to match the current dice size setting.
  */
 function updateDiceSoNicePreset(dice3d: any) {
-  const diceSize = (() => {
-    try {
-      return getSetting("diceSize") || "d6";
-    } catch {
-      return "d6";
-    }
-  })();
+  const diceSize = safeGetSetting("diceSize", "d6");
   const faces = FACE_COUNTS[diceSize] ?? 6;
-  const iconTheme = (() => {
-    try {
-      return getSetting("iconTheme") || "skull";
-    } catch {
-      return "skull";
-    }
-  })();
+  const iconTheme = safeGetSetting("iconTheme", "skull");
   const symbol = THEME_SYMBOLS[iconTheme] ?? THEME_SYMBOLS.skull;
   const labels = [symbol, ...Array(faces - 1).fill("")];
   dice3d.addDicePreset({
