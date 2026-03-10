@@ -1,6 +1,7 @@
 import { rollTensionPool } from "./tension-die.js";
 import { getSetting, setSetting } from "./constants.js";
 import { announce } from "./announcements.js";
+import { computeBulkAddSteps } from "./bulk-add.js";
 import { buildPoolContext, ICON_THEMES } from "./pool-context.js";
 import type { TensionPoolContext } from "./pool-context.js";
 
@@ -195,28 +196,17 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
       },
     });
     if (!input || input <= 0) return;
-    let remaining = Math.min(input, 50);
+    const current = getSetting("diceCount");
+    const steps = computeBulkAddSteps(Math.min(input, 50), current, max);
 
-    while (remaining > 0) {
-      const current = getSetting("diceCount");
-      const space = max - current;
-      const toAdd = Math.min(remaining, space);
-
-      if (toAdd > 0) {
-        const newCount = current + toAdd;
-        await setSetting("diceCount", newCount);
-        remaining -= toAdd;
-
-        if (newCount >= max) {
-          await announce("break", newCount, max);
-          await TensionPoolApp._rollAndClear(max);
-        } else {
-          await announce("rise", newCount, max);
-        }
-      } else {
-        // Pool is already full — roll and clear, then continue
-        await announce("break", current, max);
+    for (const step of steps) {
+      if (step.type === "overflow") {
+        if (step.added > 0) await setSetting("diceCount", step.newCount);
+        await announce("break", step.newCount, max);
         await TensionPoolApp._rollAndClear(max);
+      } else {
+        await setSetting("diceCount", step.newCount);
+        await announce("rise", step.newCount, max);
       }
     }
   }
