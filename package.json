@@ -1,7 +1,7 @@
 {
   "name": "tension-pool-2",
   "packageManager": "pnpm@8.7.5",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Tension Pool 2 is a Foundry (Re)Implementation and Evolution of the Angry GM's idea of Time Pools/Tension Pools",
   "type": "module",
   "scripts": {
