@@ -70,9 +70,10 @@ The tension pool appears as a floating, draggable widget on screen. Drag it anyw
 - **Roll** (dice icon) — Roll the current pool and clear it. Rolling with an empty pool rolls 1 die
 - **Custom Roll** (d20 icon) — Roll any number of tension dice without affecting the pool. Opens a dialog to enter the dice count
 - **+** / **-** — Add or remove a die from the pool
+- **Bulk Add** (layer-plus icon) — Add multiple dice at once. If the total exceeds the pool size, the pool fills up, auto-rolls, and continues adding the remainder
 - **Clear** (x icon) — Empty the pool without rolling
 
-**Compact view** hides roll, custom roll, and clear — showing just a single icon with the dice count. The + and - buttons remain available.
+**Compact view** hides roll, custom roll, bulk add, and clear — showing just a single icon with the dice count. The + and - buttons remain available.
 
 When the pool reaches its maximum size, it automatically rolls and clears.
 

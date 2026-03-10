@@ -25,6 +25,7 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
       rollPool: TensionPoolApp._onRollPool,
       clearPool: TensionPoolApp._onClearPool,
       customRoll: TensionPoolApp._onCustomRoll,
+      bulkAdd: TensionPoolApp._onBulkAdd,
       togglePool: TensionPoolApp._onTogglePool,
     },
   };
@@ -179,6 +180,45 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
     const max = getSetting("poolSize");
     await announce("fade", 0, max);
     await setSetting("diceCount", 0);
+  }
+
+  static async _onBulkAdd(this: TensionPoolApp) {
+    const max = getSetting("poolSize");
+    const input = await foundry.applications.api.DialogV2.prompt({
+      window: { title: game.i18n!.localize("TENSION_POOL.BulkAdd.Title") },
+      content: `<form><div class="form-group"><label>${game.i18n!.localize("TENSION_POOL.BulkAdd.Label")}</label><input type="number" name="count" value="1" min="1" max="50" autofocus></div></form>`,
+      ok: {
+        label: game.i18n!.localize("TENSION_POOL.AddDie"),
+        callback: (_event: any, button: any) => {
+          return parseInt(button.form.elements.count.value, 10);
+        },
+      },
+    });
+    if (!input || input <= 0) return;
+    let remaining = Math.min(input, 50);
+
+    while (remaining > 0) {
+      const current = getSetting("diceCount");
+      const space = max - current;
+      const toAdd = Math.min(remaining, space);
+
+      if (toAdd > 0) {
+        const newCount = current + toAdd;
+        await setSetting("diceCount", newCount);
+        remaining -= toAdd;
+
+        if (newCount >= max) {
+          await announce("break", newCount, max);
+          await TensionPoolApp._rollAndClear(max);
+        } else {
+          await announce("rise", newCount, max);
+        }
+      } else {
+        // Pool is already full — roll and clear, then continue
+        await announce("break", current, max);
+        await TensionPoolApp._rollAndClear(max);
+      }
+    }
   }
 
   static async _onTogglePool(this: TensionPoolApp) {
