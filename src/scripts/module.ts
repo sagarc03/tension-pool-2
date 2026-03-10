@@ -15,20 +15,11 @@ Hooks.once("init", () => {
 
   registerTensionDie();
 
-  registerSetting("position", {
-    name: "TENSION_POOL.Settings.Position.Name",
-    hint: "TENSION_POOL.Settings.Position.Hint",
+  registerSetting("windowPosition", {
     scope: "client",
-    config: true,
-    type: String,
-    choices: {
-      left: "TENSION_POOL.Settings.Position.Left",
-      right: "TENSION_POOL.Settings.Position.Right",
-    },
-    default: "left",
-    onChange: () => {
-      poolApp?.debouncedRender();
-    },
+    config: false,
+    type: Object,
+    default: null,
   });
 
   registerSetting("poolSize", {

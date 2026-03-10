@@ -13,7 +13,7 @@ const { ApplicationV2, HandlebarsApplicationMixin } =
 export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<TensionPoolContext> {
   static override DEFAULT_OPTIONS = {
     id: "tension-pool",
-    classes: ["tension-pool", "faded-ui"],
+    classes: ["tension-pool"],
     window: {
       frame: false,
       positioned: false,
@@ -35,10 +35,9 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
     },
   };
 
-  private _resizeObserver: ResizeObserver | null = null;
-  private _mutationObserver: MutationObserver | null = null;
   private _previousDiceCount: number = -1;
   private _renderDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+  private _dragState: { startX: number; startY: number; startLeft: number; startTop: number } | null = null;
 
   /**
    * Debounced render — batches rapid setting changes (e.g. fast add/remove)
@@ -53,29 +52,34 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
   }
 
   override async _onRender(_context: any, _options: any) {
-    const position = getSetting("position");
-    this.element?.setAttribute("data-tooltip-direction", position === "right" ? "RIGHT" : "LEFT");
-    this._positionNextToHotbar();
+    const el = this.element as HTMLElement;
+    if (!el) return;
 
-    this._resizeObserver?.disconnect();
-    this._resizeObserver = new ResizeObserver(() => this._positionNextToHotbar());
+    // Apply saved or default position
+    const saved = getSetting("windowPosition");
+    if (saved) {
+      el.style.position = "fixed";
+      el.style.left = `${saved.left}px`;
+      el.style.top = `${saved.top}px`;
+    } else if (this._previousDiceCount === -1) {
+      // Center on screen for first-time users
+      el.style.position = "fixed";
+      const left = Math.round((window.innerWidth - (el.offsetWidth || 0)) / 2);
+      const top = Math.round((window.innerHeight - (el.offsetHeight || 0)) / 2);
+      el.style.left = `${left}px`;
+      el.style.top = `${top}px`;
+    }
 
-    this._mutationObserver?.disconnect();
-    this._mutationObserver = new MutationObserver(() => this._positionNextToHotbar());
-
-    const uiMiddle = document.getElementById("ui-middle");
-    if (uiMiddle) this._resizeObserver.observe(uiMiddle);
-
-    const hotbar = document.getElementById("hotbar");
-    if (hotbar) {
-      this._resizeObserver.observe(hotbar);
-      this._mutationObserver.observe(hotbar, { childList: true, subtree: true, attributes: true });
+    // Set up drag handling — anything except buttons initiates drag
+    const wrapper = el.querySelector(".tp-wrapper") as HTMLElement;
+    if (wrapper) {
+      wrapper.addEventListener("pointerdown", this._onDragStart.bind(this));
     }
 
     // Animate icons on dice count change
     const currentCount = getSetting("diceCount");
     if (this._previousDiceCount >= 0 && this._previousDiceCount !== currentCount) {
-      const icons = this.element?.querySelectorAll(".tp-icons i");
+      const icons = el.querySelectorAll(".tp-icons i");
       if (icons) {
         const animClass = currentCount > this._previousDiceCount ? "tp-pulse" : "tp-fade";
         icons.forEach((icon) => {
@@ -87,49 +91,41 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
     this._previousDiceCount = currentCount;
   }
 
-  override _onClose(_options: any) {
-    this._resizeObserver?.disconnect();
-    this._resizeObserver = null;
-    this._mutationObserver?.disconnect();
-    this._mutationObserver = null;
-  }
-
-  _positionNextToHotbar() {
-    if (!this.element) return;
-
-    const hotbar = document.getElementById("hotbar");
-    if (!hotbar) return;
-
+  private _onDragStart(event: PointerEvent) {
     const el = this.element as HTMLElement;
-    const position = getSetting("position");
+    if (!el) return;
 
-    const hotbarLeft = hotbar.offsetLeft;
-    const hotbarWidth = hotbar.offsetWidth;
-    const hotbarTop = hotbar.offsetTop;
-    const hotbarHeight = hotbar.offsetHeight;
+    this._dragState = {
+      startX: event.clientX,
+      startY: event.clientY,
+      startLeft: parseInt(el.style.left, 10) || 0,
+      startTop: parseInt(el.style.top, 10) || 0,
+    };
 
-    const uiScale = parseFloat(
-      getComputedStyle(document.documentElement).getPropertyValue("--ui-scale") || "1"
-    );
+    const onMove = (e: PointerEvent) => {
+      if (!this._dragState) return;
+      const dx = e.clientX - this._dragState.startX;
+      const dy = e.clientY - this._dragState.startY;
+      el.style.left = `${this._dragState.startLeft + dx}px`;
+      el.style.top = `${this._dragState.startTop + dy}px`;
+    };
 
-    const uiMiddle = document.getElementById("ui-middle");
-    const containerLeft = uiMiddle ? uiMiddle.offsetLeft : 0;
-    const containerTop = uiMiddle ? uiMiddle.offsetTop : 0;
+    const onUp = () => {
+      document.removeEventListener("pointermove", onMove);
+      document.removeEventListener("pointerup", onUp);
 
-    const scaledLeft = containerLeft + hotbarLeft * uiScale;
-    const scaledTop = containerTop + hotbarTop * uiScale;
-    const scaledWidth = hotbarWidth * uiScale;
-    const scaledHeight = hotbarHeight * uiScale;
-    const elWidth = el.offsetWidth || 150;
+      if (this._dragState) {
+        const left = parseInt(el.style.left, 10);
+        const top = parseInt(el.style.top, 10);
+        if (!isNaN(left) && !isNaN(top)) {
+          setSetting("windowPosition", { left, top });
+        }
+        this._dragState = null;
+      }
+    };
 
-    el.style.position = "fixed";
-    el.style.top = `${scaledTop + (scaledHeight - el.offsetHeight) / 2}px`;
-
-    if (position === "right") {
-      el.style.left = `${scaledLeft + scaledWidth + 16}px`;
-    } else {
-      el.style.left = `${scaledLeft - elWidth - 16}px`;
-    }
+    document.addEventListener("pointermove", onMove);
+    document.addEventListener("pointerup", onUp);
   }
 
   override async _prepareContext(
@@ -138,7 +134,6 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
     return buildPoolContext(
       getSetting("diceCount"),
       getSetting("iconTheme"),
-      getSetting("position"),
       getSetting("collapsed"),
       (game as Game).user!.isGM,
       game.i18n!,

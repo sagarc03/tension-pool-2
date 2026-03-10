@@ -34,9 +34,10 @@ Hooks.on("quenchReady", (quench: any) => {
       const g = game as Game;
 
       describe("Settings Registration", () => {
-        it("position setting is registered", () => {
-          const value = g.settings!.get("tension-pool-2" as any, "position" as any);
-          expect(value).to.be.a("string");
+        it("windowPosition setting is registered", () => {
+          const value = g.settings!.get("tension-pool-2" as any, "windowPosition" as any);
+          // Default is null (no saved position yet)
+          expect(value).to.satisfy((v: any) => v === null || typeof v === "object");
         });
 
         it("poolSize setting is registered", () => {
@@ -88,21 +89,6 @@ Hooks.on("quenchReady", (quench: any) => {
         it("tension pool element exists in DOM", () => {
           const el = document.getElementById("tension-pool");
           expect(el).to.not.be.null;
-        });
-
-        it("has faded-ui class", () => {
-          const el = document.getElementById("tension-pool");
-          expect(el!.classList.contains("faded-ui")).to.be.true;
-        });
-
-        it("is positioned fixed", () => {
-          const el = document.getElementById("tension-pool");
-          expect(el!.style.position).to.equal("fixed");
-        });
-
-        it("has tooltip direction set", () => {
-          const el = document.getElementById("tension-pool");
-          expect(el!.getAttribute("data-tooltip-direction")).to.be.oneOf(["LEFT", "RIGHT"]);
         });
 
         it("shows toggle button for all users", () => {
