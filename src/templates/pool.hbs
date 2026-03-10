@@ -1,28 +1,42 @@
-<div class="tp-wrapper" data-position="{{#if positionRight}}right{{else}}left{{/if}}">
-<div class="tp-controls">
-  {{#if isGM}}
-  {{#unless collapsed}}
-  <button type="button" class="ui-control fa-solid fa-dice-d20 icon" data-action="customRoll" data-tooltip="TENSION_POOL.CustomRoll.Tooltip" aria-label="Custom Roll"></button>
-  {{/unless}}
-  {{/if}}
-  <button type="button" class="ui-control {{toggleIcon}} icon" data-action="togglePool" data-tooltip="{{toggleTooltip}}" aria-label="Toggle Pool"></button>
+<div class="tp-wrapper">
+<div class="tp-cell tp-drag-handle" data-tooltip="TENSION_POOL.Title" data-tooltip-direction="LEFT"><i class="fa-solid fa-hourglass-half"></i></div>
+<div class="tp-cell">
+  <button type="button" class="ui-control {{toggleIcon}} icon" data-action="togglePool" data-tooltip="{{toggleTooltip}}" data-tooltip-direction="LEFT" aria-label="Toggle Pool"></button>
 </div>
 {{#unless collapsed}}
 {{#if isGM}}
-<div class="tp-controls">
-  <button type="button" class="ui-control fa-solid fa-dice icon" data-action="rollPool" data-tooltip="TENSION_POOL.Roll" aria-label="Roll Pool"></button>
-  <button type="button" class="ui-control fa-solid fa-xmark icon" data-action="clearPool" data-tooltip="TENSION_POOL.Clear" aria-label="Clear Pool"></button>
+<div class="tp-cell">
+  <button type="button" class="ui-control fa-solid fa-dice icon" data-action="rollPool" data-tooltip="TENSION_POOL.Roll" data-tooltip-direction="LEFT" aria-label="Roll Pool"></button>
+</div>
+<div class="tp-cell">
+  <button type="button" class="ui-control fa-solid fa-dice-d20 icon" data-action="customRoll" data-tooltip="TENSION_POOL.CustomRoll.Tooltip" data-tooltip-direction="LEFT" aria-label="Custom Roll"></button>
 </div>
 {{/if}}
+{{/unless}}
+{{#if collapsed}}
+<div class="tp-compact-icons" data-tooltip="{{tensionTooltip}}">
+  <i class="{{compactDisplayIcon}}"></i>
+  <span class="tp-compact-count">{{diceCount}}</span>
+</div>
+{{else}}
 <div class="tp-icons" data-tooltip="{{tensionTooltip}}">
   {{#each icons}}
   <i class="{{this.class}}"></i>
   {{/each}}
 </div>
+{{/if}}
 {{#if isGM}}
-<div class="tp-controls">
-  <button type="button" class="ui-control fa-solid fa-plus icon" data-action="addDie" data-tooltip="TENSION_POOL.AddDie" aria-label="Add Die"></button>
-  <button type="button" class="ui-control fa-solid fa-minus icon" data-action="removeDie" data-tooltip="TENSION_POOL.RemoveDie" aria-label="Remove Die"></button>
+<div class="tp-cell">
+  <button type="button" class="ui-control fa-solid fa-plus icon" data-action="addDie" data-tooltip="TENSION_POOL.AddDie" data-tooltip-direction="RIGHT" aria-label="Add Die"></button>
+</div>
+<div class="tp-cell">
+  <button type="button" class="ui-control fa-solid fa-minus icon" data-action="removeDie" data-tooltip="TENSION_POOL.RemoveDie" data-tooltip-direction="RIGHT" aria-label="Remove Die"></button>
+</div>
+{{/if}}
+{{#unless collapsed}}
+{{#if isGM}}
+<div class="tp-cell">
+  <button type="button" class="ui-control fa-solid fa-xmark icon" data-action="clearPool" data-tooltip="TENSION_POOL.Clear" data-tooltip-direction="RIGHT" aria-label="Clear Pool"></button>
 </div>
 {{/if}}
 {{/unless}}

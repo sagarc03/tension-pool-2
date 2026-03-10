@@ -11,7 +11,8 @@ export interface TensionPoolIcon {
 export interface TensionPoolContext {
   isGM: boolean;
   icons: TensionPoolIcon[];
-  positionRight: boolean;
+  diceCount: number;
+  compactDisplayIcon: string;
   tensionTooltip: string;
   collapsed: boolean;
   toggleIcon: string;
@@ -21,7 +22,6 @@ export interface TensionPoolContext {
 export function buildPoolContext(
   diceCount: number,
   theme: string,
-  position: string,
   collapsed: boolean,
   isGM: boolean,
   i18n: { localize: (key: string) => string; format: (key: string, data: any) => string },
@@ -44,11 +44,12 @@ export function buildPoolContext(
   return {
     isGM,
     icons,
-    positionRight: position === "right",
+    diceCount,
+    compactDisplayIcon: diceCount === 0 ? iconSet.noTension : iconSet.tension,
     tensionTooltip,
     collapsed,
     toggleIcon: collapsed ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down",
     // Raw i18n key — Foundry's data-tooltip attribute auto-localizes it
-    toggleTooltip: collapsed ? "TENSION_POOL.ShowPool" : "TENSION_POOL.HidePool",
+    toggleTooltip: collapsed ? "TENSION_POOL.Expand" : "TENSION_POOL.Compact",
   };
 }
