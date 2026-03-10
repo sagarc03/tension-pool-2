@@ -54,20 +54,25 @@ Once installed, launch your world, open **Settings** > **Manage Modules**, enabl
 
 ## Using the Module
 
+The tension pool appears as a floating, draggable widget on screen. Drag it anywhere you like — your position is saved automatically. Use the toggle button to switch between **expanded** and **compact** views.
+
 ### For the GM
 
-Once enabled, a set of control buttons appears next to the macro hotbar. These are only visible to the GM:
-
-| Empty Pool | With Tension |
+| Expanded (empty) | Expanded (with tension) |
 |---|---|
-| ![GM Empty](assets/GM-Empty.png) | ![GM With Tension](assets/GM-With-Tension.png) |
+| ![GM Expanded Empty](assets/gm-expanded-empty.png) | ![GM Expanded](assets/gm-expanded.png) |
 
+| Compact (empty) | Compact (with tension) |
+|---|---|
+| ![GM Compact Empty](assets/gm-compact-emtpy.png) | ![GM Compact](assets/gm-compact.png) |
+
+**Expanded view:**
 - **Roll** (dice icon) — Roll the current pool and clear it. Rolling with an empty pool rolls 1 die
-- **Custom Roll** (d20 icon) — Roll any number of tension dice without affecting the pool. Opens a dialog to enter the dice count. Useful for one-off rolls outside the normal pool flow
+- **Custom Roll** (d20 icon) — Roll any number of tension dice without affecting the pool. Opens a dialog to enter the dice count
+- **+** / **-** — Add or remove a die from the pool
 - **Clear** (x icon) — Empty the pool without rolling
-- **Toggle** (chevron icon) — Hide or show the tension pool display. The collapsed state is saved per-client
-- **+** — Add a die to the pool
-- **-** — Remove a die from the pool
+
+**Compact view** hides roll, custom roll, and clear — showing just a single icon with the dice count. The + and - buttons remain available.
 
 When the pool reaches its maximum size, it automatically rolls and clears.
 
@@ -75,13 +80,15 @@ Roll results appear in the chat as a single message showing the outcome — "Com
 
 ### For Players
 
-Players see the tension pool icons next to the hotbar, showing how many dice are currently in the pool. When the pool is empty, a single outline icon is shown. As the GM adds dice, filled icons appear — one per die.
-
-| Empty Pool | With Tension |
+| Expanded (empty) | Expanded (with tension) |
 |---|---|
-| ![Player Empty](assets/Player-Empty.png) | ![Player With Tension](assets/Player-With-Tension.png) |
+| ![Player Expanded Empty](assets/player-expanded-empty.png) | ![Player Expanded](assets/player-expanded.png) |
 
-Players cannot add, remove, or roll dice. They can only watch the tension build. Players can use the **Toggle** button (chevron icon) to hide or show the tension pool display.
+| Compact (empty) | Compact (with tension) |
+|---|---|
+| ![Player Compact Empty](assets/player-compact-empty.png) | ![Player Compact](assets/player-compact.png) |
+
+Players see the tension pool icons showing how many dice are currently in the pool. In expanded view, each die is shown as an individual icon. In compact view, a single icon with the count is displayed. Players can toggle between views but cannot add, remove, or roll dice.
 
 ## Settings
 
@@ -98,8 +105,6 @@ These settings affect all players in the world.
 ### Player Settings (client-level)
 
 Each player can customize these independently.
-
-**Window Position** — Place the tension pool to the left or right of the macro hotbar. Default: Left.
 
 **Icon Theme** — Choose how tension is displayed. Options:
 - **Skull** — Solid skull (tension) / outline skull (no tension)
