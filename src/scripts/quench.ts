@@ -353,6 +353,141 @@ Hooks.on("quenchReady", (quench: any) => {
   );
 
   quench.registerBatch(
+    "tension-pool-2.collapse-expand",
+    (context: any) => {
+      const { describe, it, expect, before, after } = context;
+      const g = game as Game;
+
+      describe("Collapsed / Expanded Toggle", function (this: any) {
+        this.timeout(10000);
+        let originalCollapsed: boolean;
+        let originalCount: number;
+
+        before(async () => {
+          originalCollapsed = g.settings!.get("tension-pool-2" as any, "collapsed" as any) as boolean;
+          originalCount = g.settings!.get("tension-pool-2" as any, "diceCount" as any) as number;
+          await g.settings!.set("tension-pool-2" as any, "diceCount" as any, 3 as any);
+          await g.settings!.set("tension-pool-2" as any, "collapsed" as any, false as any);
+          await wait();
+        });
+
+        after(async () => {
+          await g.settings!.set("tension-pool-2" as any, "collapsed" as any, originalCollapsed as any);
+          await g.settings!.set("tension-pool-2" as any, "diceCount" as any, originalCount as any);
+          await wait();
+        });
+
+        it("expanded view shows individual dice icons", async () => {
+          await g.settings!.set("tension-pool-2" as any, "collapsed" as any, false as any);
+          await wait();
+          const icons = document.querySelector("#tension-pool .tp-icons");
+          expect(icons).to.not.be.null;
+          const compact = document.querySelector("#tension-pool .tp-compact-icons");
+          expect(compact).to.be.null;
+        });
+
+        it("expanded view shows roll and custom roll buttons", async () => {
+          await g.settings!.set("tension-pool-2" as any, "collapsed" as any, false as any);
+          await wait();
+          const roll = document.querySelector('#tension-pool [data-action="rollPool"]');
+          const customRoll = document.querySelector('#tension-pool [data-action="customRoll"]');
+          expect(roll).to.not.be.null;
+          expect(customRoll).to.not.be.null;
+        });
+
+        it("expanded view shows bulk add and clear buttons", async () => {
+          await g.settings!.set("tension-pool-2" as any, "collapsed" as any, false as any);
+          await wait();
+          const bulkAdd = document.querySelector('#tension-pool [data-action="bulkAdd"]');
+          const clear = document.querySelector('#tension-pool [data-action="clearPool"]');
+          expect(bulkAdd).to.not.be.null;
+          expect(clear).to.not.be.null;
+        });
+
+        it("collapsed view shows compact icons with count", async () => {
+          await g.settings!.set("tension-pool-2" as any, "collapsed" as any, true as any);
+          await wait();
+          const compact = document.querySelector("#tension-pool .tp-compact-icons");
+          expect(compact).to.not.be.null;
+          const count = compact!.querySelector(".tp-compact-count");
+          expect(count).to.not.be.null;
+          expect(count!.textContent).to.equal("3");
+          const icons = document.querySelector("#tension-pool .tp-icons");
+          expect(icons).to.be.null;
+        });
+
+        it("collapsed view hides roll and custom roll buttons", async () => {
+          await g.settings!.set("tension-pool-2" as any, "collapsed" as any, true as any);
+          await wait();
+          const roll = document.querySelector('#tension-pool [data-action="rollPool"]');
+          const customRoll = document.querySelector('#tension-pool [data-action="customRoll"]');
+          expect(roll).to.be.null;
+          expect(customRoll).to.be.null;
+        });
+
+        it("collapsed view hides bulk add and clear buttons", async () => {
+          await g.settings!.set("tension-pool-2" as any, "collapsed" as any, true as any);
+          await wait();
+          const bulkAdd = document.querySelector('#tension-pool [data-action="bulkAdd"]');
+          const clear = document.querySelector('#tension-pool [data-action="clearPool"]');
+          expect(bulkAdd).to.be.null;
+          expect(clear).to.be.null;
+        });
+
+        it("collapsed view still shows add and remove buttons", async () => {
+          await g.settings!.set("tension-pool-2" as any, "collapsed" as any, true as any);
+          await wait();
+          const add = document.querySelector('#tension-pool [data-action="addDie"]');
+          const remove = document.querySelector('#tension-pool [data-action="removeDie"]');
+          expect(add).to.not.be.null;
+          expect(remove).to.not.be.null;
+        });
+
+        it("toggling from collapsed to expanded restores all buttons", async () => {
+          await g.settings!.set("tension-pool-2" as any, "collapsed" as any, true as any);
+          await wait();
+          clickAction("togglePool");
+          await wait();
+          const roll = document.querySelector('#tension-pool [data-action="rollPool"]');
+          const customRoll = document.querySelector('#tension-pool [data-action="customRoll"]');
+          const bulkAdd = document.querySelector('#tension-pool [data-action="bulkAdd"]');
+          const clear = document.querySelector('#tension-pool [data-action="clearPool"]');
+          const add = document.querySelector('#tension-pool [data-action="addDie"]');
+          const remove = document.querySelector('#tension-pool [data-action="removeDie"]');
+          expect(roll).to.not.be.null;
+          expect(customRoll).to.not.be.null;
+          expect(bulkAdd).to.not.be.null;
+          expect(clear).to.not.be.null;
+          expect(add).to.not.be.null;
+          expect(remove).to.not.be.null;
+          const icons = document.querySelector("#tension-pool .tp-icons");
+          expect(icons).to.not.be.null;
+        });
+
+        it("toggling from expanded to collapsed hides expanded-only buttons", async () => {
+          await g.settings!.set("tension-pool-2" as any, "collapsed" as any, false as any);
+          await wait();
+          clickAction("togglePool");
+          await wait();
+          const roll = document.querySelector('#tension-pool [data-action="rollPool"]');
+          const customRoll = document.querySelector('#tension-pool [data-action="customRoll"]');
+          const bulkAdd = document.querySelector('#tension-pool [data-action="bulkAdd"]');
+          const clear = document.querySelector('#tension-pool [data-action="clearPool"]');
+          expect(roll).to.be.null;
+          expect(customRoll).to.be.null;
+          expect(bulkAdd).to.be.null;
+          expect(clear).to.be.null;
+          const add = document.querySelector('#tension-pool [data-action="addDie"]');
+          const remove = document.querySelector('#tension-pool [data-action="removeDie"]');
+          expect(add).to.not.be.null;
+          expect(remove).to.not.be.null;
+        });
+      });
+    },
+    { displayName: "Tension Pool 2: Collapsed / Expanded" }
+  );
+
+  quench.registerBatch(
     "tension-pool-2.tension-die",
     (context: any) => {
       const { describe, it, expect } = context;
