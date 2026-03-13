@@ -38,9 +38,11 @@ The more dice in the pool, the higher the chance of a complication. Players can 
 1. In the Foundry VTT setup screen, go to the **Add-on Modules** tab
 2. Click **Install Module**
 3. Paste the following URL into the **Manifest URL** field at the bottom of the window:
+
    ```
    https://github.com/sagarc03/tension-pool-2/releases/latest/download/module.json
    ```
+
 4. Click **Install**
 
 ### Activating the Module
@@ -64,9 +66,10 @@ The tension pool appears as a floating, draggable widget on screen. Drag it anyw
 
 | Compact (empty) | Compact (with tension) |
 |---|---|
-| ![GM Compact Empty](assets/gm-compact-emtpy.png) | ![GM Compact](assets/gm-compact.png) |
+| ![GM Compact Empty](assets/gm-compact-empty.png) | ![GM Compact](assets/gm-compact.png) |
 
 **Expanded view:**
+
 - **Roll** (dice icon) — Roll the current pool and clear it. Rolling with an empty pool rolls 1 die
 - **Custom Roll** (d20 icon) — Roll any number of tension dice without affecting the pool. Opens a dialog to enter the dice count
 - **+** / **-** — Add or remove a die from the pool
@@ -108,6 +111,7 @@ These settings affect all players in the world.
 Each player can customize these independently.
 
 **Icon Theme** — Choose how tension is displayed. Options:
+
 - **Skull** — Solid skull (tension) / outline skull (no tension)
 - **Square** — Exclamation square (tension) / outline square (no tension)
 - **Thunder** — Lightning bolt (tension) / sun (no tension)
