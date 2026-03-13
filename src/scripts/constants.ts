@@ -1,7 +1,7 @@
 export const MODULE_ID = "tension-pool-2";
 
 type SettingsMap = {
-  windowPosition: { left: number; top: number } | null;
+  windowPosition: { leftPct: number; topPct: number } | null;
   poolSize: number;
   iconTheme: string;
   diceSize: string;

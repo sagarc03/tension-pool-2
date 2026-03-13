@@ -4,6 +4,7 @@ import { announce } from "./announcements.js";
 import { computeBulkAddSteps } from "./bulk-add.js";
 import { buildPoolContext, ICON_THEMES } from "./pool-context.js";
 import type { TensionPoolContext } from "./pool-context.js";
+import { clampToViewport, pctToPixels, pixelsToPct } from "./clamp-to-viewport.js";
 
 export { ICON_THEMES, buildPoolContext };
 export type { TensionPoolContext };
@@ -40,6 +41,8 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
   private _previousDiceCount: number = -1;
   private _renderDebounceTimer: ReturnType<typeof setTimeout> | null = null;
   private _dragState: { startX: number; startY: number; startLeft: number; startTop: number } | null = null;
+  private _boundDragStart: ((e: PointerEvent) => void) | null = null;
+  private _boundOnResize: (() => void) | null = null;
 
   /**
    * Debounced render — batches rapid setting changes (e.g. fast add/remove)
@@ -57,25 +60,34 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
     const el = this.element as HTMLElement;
     if (!el) return;
 
-    // Apply saved or default position
+    // Apply saved or default position, clamped to viewport
     const saved = getSetting("windowPosition");
+    el.style.position = "fixed";
     if (saved) {
-      el.style.position = "fixed";
-      el.style.left = `${saved.left}px`;
-      el.style.top = `${saved.top}px`;
+      const pixels = pctToPixels(saved.leftPct, saved.topPct, window.innerWidth, window.innerHeight);
+      const clamped = clampToViewport(pixels.left, pixels.top, el.offsetWidth || 0, window.innerWidth, window.innerHeight);
+      el.style.left = `${clamped.left}px`;
+      el.style.top = `${clamped.top}px`;
     } else if (this._previousDiceCount === -1) {
       // Center on screen for first-time users
-      el.style.position = "fixed";
       const left = Math.round((window.innerWidth - (el.offsetWidth || 0)) / 2);
       const top = Math.round((window.innerHeight - (el.offsetHeight || 0)) / 2);
       el.style.left = `${left}px`;
       el.style.top = `${top}px`;
     }
 
-    // Set up drag handling — anything except buttons initiates drag
+    // Set up drag handling — bind once, replace on re-render to avoid stacking
     const wrapper = el.querySelector(".tp-wrapper") as HTMLElement;
     if (wrapper) {
-      wrapper.addEventListener("pointerdown", this._onDragStart.bind(this));
+      if (this._boundDragStart) wrapper.removeEventListener("pointerdown", this._boundDragStart);
+      this._boundDragStart = this._onDragStart.bind(this);
+      wrapper.addEventListener("pointerdown", this._boundDragStart);
+    }
+
+    // Re-clamp position when viewport resizes
+    if (!this._boundOnResize) {
+      this._boundOnResize = () => this._clampToCurrentViewport();
+      window.addEventListener("resize", this._boundOnResize);
     }
 
     // Animate icons on dice count change
@@ -118,10 +130,13 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
       document.removeEventListener("pointerup", onUp);
 
       if (this._dragState) {
-        const left = parseInt(el.style.left, 10);
-        const top = parseInt(el.style.top, 10);
-        if (!isNaN(left) && !isNaN(top)) {
-          setSetting("windowPosition", { left, top });
+        const rawLeft = parseInt(el.style.left, 10);
+        const rawTop = parseInt(el.style.top, 10);
+        if (!isNaN(rawLeft) && !isNaN(rawTop)) {
+          const clamped = clampToViewport(rawLeft, rawTop, el.offsetWidth, window.innerWidth, window.innerHeight);
+          el.style.left = `${clamped.left}px`;
+          el.style.top = `${clamped.top}px`;
+          setSetting("windowPosition", pixelsToPct(clamped.left, clamped.top, window.innerWidth, window.innerHeight));
         }
         this._dragState = null;
       }
@@ -129,6 +144,17 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
 
     document.addEventListener("pointermove", onMove);
     document.addEventListener("pointerup", onUp);
+  }
+
+  private _clampToCurrentViewport() {
+    const el = this.element as HTMLElement;
+    if (!el) return;
+    const saved = getSetting("windowPosition");
+    if (!saved) return;
+    const pixels = pctToPixels(saved.leftPct, saved.topPct, window.innerWidth, window.innerHeight);
+    const clamped = clampToViewport(pixels.left, pixels.top, el.offsetWidth, window.innerWidth, window.innerHeight);
+    el.style.left = `${clamped.left}px`;
+    el.style.top = `${clamped.top}px`;
   }
 
   override async _prepareContext(
