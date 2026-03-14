@@ -63,17 +63,27 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
     // Apply saved or default position, clamped to viewport
     const saved = getSetting("windowPosition");
     el.style.position = "fixed";
+    const elW = el.offsetWidth || 0;
+    const elH = el.offsetHeight || 0;
+    const vpW = window.innerWidth;
+    const vpH = window.innerHeight;
+
     if (saved) {
-      const pixels = pctToPixels(saved.leftPct, saved.topPct, window.innerWidth, window.innerHeight);
-      const clamped = clampToViewport(pixels.left, pixels.top, el.offsetWidth || 0, window.innerWidth, window.innerHeight);
-      el.style.left = `${clamped.left}px`;
-      el.style.top = `${clamped.top}px`;
+      const pixels = pctToPixels(saved.leftPct, saved.topPct, vpW, vpH);
+      // If the element would be entirely outside the viewport, reset to centre
+      if (pixels.left + elW < 0 || pixels.left > vpW || pixels.top + elH < 0 || pixels.top > vpH) {
+        el.style.left = `${Math.round((vpW - elW) / 2)}px`;
+        el.style.top = `${Math.round((vpH - elH) / 2)}px`;
+        setSetting("windowPosition", null);
+      } else {
+        const clamped = clampToViewport(pixels.left, pixels.top, elW, vpW, vpH);
+        el.style.left = `${clamped.left}px`;
+        el.style.top = `${clamped.top}px`;
+      }
     } else if (this._previousDiceCount === -1) {
       // Center on screen for first-time users
-      const left = Math.round((window.innerWidth - (el.offsetWidth || 0)) / 2);
-      const top = Math.round((window.innerHeight - (el.offsetHeight || 0)) / 2);
-      el.style.left = `${left}px`;
-      el.style.top = `${top}px`;
+      el.style.left = `${Math.round((vpW - elW) / 2)}px`;
+      el.style.top = `${Math.round((vpH - elH) / 2)}px`;
     }
 
     // Set up drag handling — bind once, replace on re-render to avoid stacking
@@ -151,10 +161,20 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
     if (!el) return;
     const saved = getSetting("windowPosition");
     if (!saved) return;
-    const pixels = pctToPixels(saved.leftPct, saved.topPct, window.innerWidth, window.innerHeight);
-    const clamped = clampToViewport(pixels.left, pixels.top, el.offsetWidth, window.innerWidth, window.innerHeight);
-    el.style.left = `${clamped.left}px`;
-    el.style.top = `${clamped.top}px`;
+    const elW = el.offsetWidth;
+    const elH = el.offsetHeight;
+    const vpW = window.innerWidth;
+    const vpH = window.innerHeight;
+    const pixels = pctToPixels(saved.leftPct, saved.topPct, vpW, vpH);
+    if (pixels.left + elW < 0 || pixels.left > vpW || pixels.top + elH < 0 || pixels.top > vpH) {
+      el.style.left = `${Math.round((vpW - elW) / 2)}px`;
+      el.style.top = `${Math.round((vpH - elH) / 2)}px`;
+      setSetting("windowPosition", null);
+    } else {
+      const clamped = clampToViewport(pixels.left, pixels.top, elW, vpW, vpH);
+      el.style.left = `${clamped.left}px`;
+      el.style.top = `${clamped.top}px`;
+    }
   }
 
   override async _prepareContext(
