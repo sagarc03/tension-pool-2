@@ -12,6 +12,7 @@ type SettingsMap = {
   addDieSound: string;
   removeDieSound: string;
   rollSound: string;
+  acceptedVersion: string;
 };
 
 export function getSetting<K extends keyof SettingsMap>(key: K): SettingsMap[K] {

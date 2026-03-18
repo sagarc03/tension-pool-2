@@ -1,8 +1,12 @@
 import "../styles/module.css";
 import { TensionPoolApp, ICON_THEMES } from "./tension-pool-app.js";
 import { registerTensionDie, registerDiceSoNice } from "./tension-die.js";
-import { MODULE_ID, getSetting, registerSetting } from "./constants.js";
+import { MODULE_ID, getSetting, setSetting, registerSetting } from "./constants.js";
 import { showBanner } from "./announcements.js";
+
+function getModuleVersion(): string {
+  return (game as Game).modules!.get(MODULE_ID)?.version ?? "0.0.0";
+}
 
 if (import.meta.env.DEV) {
   import("./quench.js");
@@ -135,7 +139,43 @@ Hooks.once("init", () => {
     filePicker: "audio",
     default: "modules/tension-pool-2/assets/sounds/soundreality-evil-bell-343686.mp3",
   });
+
+  registerSetting("acceptedVersion", {
+    scope: "world",
+    config: false,
+    type: String,
+    default: "",
+  });
 });
+
+async function showDisclaimerDialog(): Promise<boolean> {
+  const i18n = game.i18n!;
+  const result = await foundry.applications.api.DialogV2.confirm({
+    window: { title: i18n.localize("TENSION_POOL.Disclaimer.Title") },
+    content: `<p>${i18n.localize("TENSION_POOL.Disclaimer.Content")}</p>`,
+    yes: { label: i18n.localize("TENSION_POOL.Disclaimer.Accept"), callback: () => true },
+    no: { label: i18n.localize("TENSION_POOL.Disclaimer.Decline"), callback: () => false },
+    rejectClose: false,
+  });
+  return result ?? false;
+}
+
+async function showDisablePrompt(): Promise<void> {
+  const i18n = game.i18n!;
+  const wantsDisable = await foundry.applications.api.DialogV2.confirm({
+    window: { title: i18n.localize("TENSION_POOL.Disclaimer.DisablePrompt.Title") },
+    content: `<p>${i18n.localize("TENSION_POOL.Disclaimer.DisablePrompt.Content")}</p>`,
+    yes: { label: i18n.localize("TENSION_POOL.Disclaimer.DisablePrompt.Yes"), callback: () => true },
+    no: { label: i18n.localize("TENSION_POOL.Disclaimer.DisablePrompt.No"), callback: () => false },
+    rejectClose: false,
+  });
+
+  if (wantsDisable) {
+    // Clear consent so disclaimer re-appears if module is re-enabled
+    await setSetting("acceptedVersion", "");
+    new foundry.applications.sidebar.apps.ModuleManagement().render({ force: true });
+  }
+}
 
 // @ts-expect-error — diceSoNiceReady is registered by Dice So Nice at runtime
 Hooks.once("diceSoNiceReady", (dice3d: any) => {
@@ -178,14 +218,40 @@ Hooks.on("tensionPoolComplication", (result: any) => {
   }
 });
 
-Hooks.on("ready", () => {
+Hooks.on("ready", async () => {
+  const accepted = getSetting("acceptedVersion");
+  const currentVersion = getModuleVersion();
+
+  if (accepted !== currentVersion) {
+    if ((game as Game).user!.isGM) {
+      const consent = await showDisclaimerDialog();
+      if (consent) {
+        await setSetting("acceptedVersion", currentVersion);
+      } else {
+        await showDisablePrompt();
+        return;
+      }
+    } else {
+      // Non-GM: module not yet accepted by GM, stay inert
+      return;
+    }
+  }
+
   poolApp = new TensionPoolApp();
   poolApp.render({ force: true });
 
-  // Listen for announcement broadcasts from GM
   (game as Game).socket!.on(`module.${MODULE_ID}`, (payload: any) => {
     if (payload.action === "announcement") {
       showBanner(payload.data);
+    }
+  });
+
+  // Clear consent when the module is disabled via Module Management
+  Hooks.on("updateSetting", (setting: any) => {
+    if (setting.key !== "core.moduleConfiguration") return;
+    const config = setting.value as Record<string, boolean> | undefined;
+    if (config && config[MODULE_ID] === false) {
+      setSetting("acceptedVersion", "");
     }
   });
 });
