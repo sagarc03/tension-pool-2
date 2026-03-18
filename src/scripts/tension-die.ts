@@ -1,4 +1,4 @@
-import { MODULE_ID, getSetting, safeGetSetting } from "./constants.js";
+import { MODULE_ID, getSetting, safeGetSetting, getGMWhisperIDs } from "./constants.js";
 
 const FACE_COUNTS: Record<string, number> = {
   d4: 4, d6: 6, d8: 8, d10: 10, d12: 12, d20: 20,
@@ -132,6 +132,9 @@ export async function rollTensionPool(diceCount: number): Promise<TensionRollRes
     ? `<strong class="tp-result-hit">${i18n.localize("TENSION_POOL.Complication")}</strong>`
     : `<strong class="tp-result-safe">${i18n.localize("TENSION_POOL.Safe")}</strong>`;
 
+  const gmOnly = getSetting("rollVisibility") === "gmOnly";
+  const whisper = gmOnly ? getGMWhisperIDs() : [];
+
   await ChatMessage.create({
     content: `
       <div class="tension-pool-roll">
@@ -140,7 +143,21 @@ export async function rollTensionPool(diceCount: number): Promise<TensionRollRes
       </div>
     `.trim(),
     speaker: { alias: i18n.localize("TENSION_POOL.Title") },
+    whisper,
   } as any);
+
+  // Send a public ominous message so players know a roll happened
+  if (gmOnly) {
+    await ChatMessage.create({
+      content: `
+        <div class="tension-pool-roll">
+          <div class="tp-dice-results"><i class="tp-die tp-die-hidden fa-solid fa-eye-slash"></i><i class="tp-die tp-die-hidden fa-solid fa-eye-slash"></i><i class="tp-die tp-die-hidden fa-solid fa-eye-slash"></i></div>
+          <div><strong class="tp-result-hidden">${i18n.localize("TENSION_POOL.RollHidden")}</strong></div>
+        </div>
+      `.trim(),
+      speaker: { alias: i18n.localize("TENSION_POOL.Title") },
+    } as any);
+  }
 
   const rollResult = { diceCount, results, hasComplication, complicationCount };
 

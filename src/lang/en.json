@@ -50,5 +50,10 @@
   "TENSION_POOL.Disclaimer.DisablePrompt.Title": "Disable Module?",
   "TENSION_POOL.Disclaimer.DisablePrompt.Content": "Would you like to disable Tension Pool 2? You can re-enable it from Game Settings → Manage Modules.",
   "TENSION_POOL.Disclaimer.DisablePrompt.Yes": "Open Module Management",
-  "TENSION_POOL.Disclaimer.DisablePrompt.No": "Not Now"
+  "TENSION_POOL.Disclaimer.DisablePrompt.No": "Not Now",
+  "TENSION_POOL.RollHidden": "The dice have spoken... what fate awaits?",
+  "TENSION_POOL.Settings.RollVisibility.Name": "Roll Visibility",
+  "TENSION_POOL.Settings.RollVisibility.Hint": "Choose whether tension pool rolls and announcements are visible to all players or only to GMs.",
+  "TENSION_POOL.Settings.RollVisibility.Public": "Public",
+  "TENSION_POOL.Settings.RollVisibility.GMOnly": "GM Only"
 }

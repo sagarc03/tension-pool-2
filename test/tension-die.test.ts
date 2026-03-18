@@ -43,6 +43,9 @@ Object.assign(globalThis, {
     },
     modules: { get: () => undefined },
     user: { id: "user1", isGM: true },
+    users: {
+      filter: (fn: any) => [{ id: "user1", isGM: true }].filter(fn),
+    },
     i18n: {
       localize: (key: string) => key,
       format: (key: string, data: any) => `${key} ${JSON.stringify(data)}`,
@@ -109,6 +112,7 @@ describe("rollTensionPool", () => {
     mockRollResults = [];
     mockCallAll.mockClear();
     mockChatCreate.mockClear();
+    mockSettings.set("rollVisibility", "public");
   });
 
   it("returns empty result for 0 dice", async () => {
@@ -187,5 +191,40 @@ describe("rollTensionPool", () => {
       hasComplication: true,
       complicationCount: 1,
     }));
+  });
+
+  it("sends public chat message when rollVisibility is public", async () => {
+    mockSettings.set("rollVisibility", "public");
+    mockRollResults = [2, 3];
+    await rollTensionPool(2);
+    expect(mockChatCreate).toHaveBeenCalledWith(
+      expect.objectContaining({ whisper: [] })
+    );
+  });
+
+  it("whispers chat message to GMs when rollVisibility is gmOnly", async () => {
+    mockSettings.set("rollVisibility", "gmOnly");
+    mockRollResults = [2, 3];
+    await rollTensionPool(2);
+    expect(mockChatCreate).toHaveBeenCalledWith(
+      expect.objectContaining({ whisper: ["user1"] })
+    );
+  });
+
+  it("sends a public ominous message when rollVisibility is gmOnly", async () => {
+    mockSettings.set("rollVisibility", "gmOnly");
+    mockRollResults = [2, 3];
+    await rollTensionPool(2);
+    expect(mockChatCreate).toHaveBeenCalledTimes(2);
+    expect(mockChatCreate).toHaveBeenLastCalledWith(
+      expect.not.objectContaining({ whisper: expect.anything() })
+    );
+  });
+
+  it("does not send ominous message when rollVisibility is public", async () => {
+    mockSettings.set("rollVisibility", "public");
+    mockRollResults = [2, 3];
+    await rollTensionPool(2);
+    expect(mockChatCreate).toHaveBeenCalledTimes(1);
   });
 });

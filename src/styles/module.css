@@ -106,6 +106,16 @@
   font-size: 18px;
 }
 
+.tension-pool-roll .tp-die-hidden {
+  color: #b8860b;
+}
+
+.tension-pool-roll .tp-result-hidden {
+  color: #b8860b;
+  font-size: 18px;
+  font-style: italic;
+}
+
 /* Announcement banner — full-width band like Foundry pause screen */
 .tp-announcement {
   position: fixed;

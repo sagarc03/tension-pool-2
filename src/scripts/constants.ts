@@ -12,6 +12,7 @@ type SettingsMap = {
   addDieSound: string;
   removeDieSound: string;
   rollSound: string;
+  rollVisibility: string;
   acceptedVersion: string;
 };
 
@@ -33,4 +34,8 @@ export function safeGetSetting<K extends keyof SettingsMap>(key: K, fallback: Se
 
 export function registerSetting<K extends keyof SettingsMap>(key: K, config: Record<string, unknown>): void {
   (game as Game).settings!.register(MODULE_ID as any, key as any, config);
+}
+
+export function getGMWhisperIDs(): string[] {
+  return (game as Game).users!.filter((u: any) => u.isGM).map((u: any) => u.id);
 }

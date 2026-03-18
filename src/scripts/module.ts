@@ -72,6 +72,19 @@ Hooks.once("init", () => {
     requiresReload: true,
   });
 
+  registerSetting("rollVisibility", {
+    name: "TENSION_POOL.Settings.RollVisibility.Name",
+    hint: "TENSION_POOL.Settings.RollVisibility.Hint",
+    scope: "world",
+    config: true,
+    type: String,
+    choices: {
+      public: "TENSION_POOL.Settings.RollVisibility.Public",
+      gmOnly: "TENSION_POOL.Settings.RollVisibility.GMOnly",
+    },
+    default: "public",
+  });
+
   registerSetting("complicationMacro", {
     name: "TENSION_POOL.Settings.ComplicationMacro.Name",
     hint: "TENSION_POOL.Settings.ComplicationMacro.Hint",
