@@ -112,6 +112,8 @@ These settings affect all players in the world.
 
 **Add Die Sound** / **Remove Die Sound** / **Roll Sound** — Custom audio files for each pool action. Accepts any audio file Foundry can play. Defaults are included with the module.
 
+**Install Example Macros** — Create a folder of example macros demonstrating the Tension Pool API. Default: off. When enabled, a "Tension Pool 2 (Examples)" folder appears in the Macros sidebar with one macro per API method. These macros are managed by the module — any edits will be lost when the setting is toggled. Disable to remove the folder and all example macros.
+
 ### Player Settings (client-level)
 
 Each player can customize these independently.
@@ -199,6 +201,8 @@ Hooks.once("tensionPool2Ready", (api) => {
   // API is guaranteed to be available here
 });
 ```
+
+**Example macros:** Enable the "Install Example Macros" setting to create a folder of ready-to-use macros demonstrating each API method.
 
 ## Third-Party Assets
 
