@@ -66,7 +66,7 @@ export async function syncExampleMacros(): Promise<void> {
 
   // Delete existing macros in the folder and recreate fresh
   const existing = g.macros!.filter((m: any) => m.folder?.id === folder.id);
-  if (existing.size > 0) {
+  if (existing.length > 0) {
     const ids = existing.map((m: any) => m.id);
     await (Macro as any).deleteDocuments(ids);
   }
@@ -89,7 +89,7 @@ export async function deleteExampleMacros(): Promise<void> {
   if (!folder) return;
 
   const existing = g.macros!.filter((m: any) => m.folder?.id === folder.id);
-  if (existing.size > 0) {
+  if (existing.length > 0) {
     const ids = existing.map((m: any) => m.id);
     await (Macro as any).deleteDocuments(ids);
   }
