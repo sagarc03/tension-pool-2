@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { createTensionPoolAPI } from "../src/scripts/api.js";
 
 const mockSettings = new Map<string, any>();
 const mockCallAll = vi.fn(() => true);
@@ -33,6 +34,29 @@ class MockRoll {
   }
 }
 
+vi.hoisted(() => {
+  Object.assign(globalThis, {
+    foundry: {
+      dice: { terms: { Die: class { faces: number; results: any[]; constructor(td: any = {}) { this.faces = td.faces ?? 6; this.results = []; } static DENOMINATION = ""; get total() { return this.results.reduce((s: number, r: any) => s + r.result, 0); } } } },
+      audio: { AudioHelper: { play: () => { } } },
+    },
+    game: {
+      settings: { get: () => undefined, set: () => Promise.resolve(), register: () => { } },
+      modules: { get: () => undefined },
+      user: { id: "user1", isGM: true },
+      users: { filter: (fn: any) => [{ id: "user1", isGM: true }].filter(fn) },
+      i18n: { localize: (key: string) => key, format: (key: string, data: any) => `${key} ${JSON.stringify(data)}` },
+      socket: { emit: () => { } },
+    },
+    Roll: class { formula: string; terms: any[]; constructor(f: string) { this.formula = f; this.terms = [{ results: [] }]; } async evaluate() { return this; } },
+    ChatMessage: { create: () => { } },
+    Hooks: { callAll: () => true },
+    CONFIG: { Dice: { terms: {} } },
+    ui: { notifications: { warn: () => { }, error: () => { } } },
+  });
+});
+
+// Now override with trackable mocks (vi.hoisted stubs just satisfy import-time access)
 Object.assign(globalThis, {
   foundry: {
     dice: { terms: { Die: MockDie } },
@@ -65,7 +89,6 @@ Object.assign(globalThis, {
   ui: { notifications: { warn: vi.fn(), error: vi.fn() } },
 });
 
-const { createTensionPoolAPI } = await import("../src/scripts/api.js");
 
 describe("Tension Pool API", () => {
   let api: ReturnType<typeof createTensionPoolAPI>;
@@ -170,7 +193,6 @@ describe("Tension Pool API", () => {
       mockSettings.set("poolSize", 6);
       mockRollResults = [2, 3, 4, 5, 6, 1];
       await api.bulkAdd(8);
-      // Pool fills to 6, rolls, resets to 0, then adds remaining 2
       expect((game as any).settings.set).toHaveBeenCalledWith("tension-pool-2", "diceCount", 6);
       expect((game as any).settings.set).toHaveBeenCalledWith("tension-pool-2", "diceCount", 0);
       expect((game as any).settings.set).toHaveBeenCalledWith("tension-pool-2", "diceCount", 2);
@@ -229,6 +251,12 @@ describe("Tension Pool API", () => {
       mockRollResults = Array(50).fill(2);
       const result = await api.customRoll(999);
       expect(result.diceCount).toBe(50);
+    });
+
+    it("floors count at 1", async () => {
+      mockRollResults = [3];
+      const result = await api.customRoll(0);
+      expect(result.diceCount).toBe(1);
     });
   });
 
