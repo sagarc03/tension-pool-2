@@ -107,34 +107,68 @@ describe("Tension Pool API", () => {
     api = createTensionPoolAPI();
   });
 
-  describe("addDie", () => {
-    it("increments dice count by 1", async () => {
-      await api.addDie();
+  describe("add", () => {
+    it("adds 1 die by default", async () => {
+      await api.add();
       expect((game as any).settings.set).toHaveBeenCalledWith(
         "tension-pool-2", "diceCount", 1
       );
     });
 
-    it("does nothing when pool is full", async () => {
-      mockSettings.set("diceCount", 6);
-      await api.addDie();
-      expect((game as any).settings.set).not.toHaveBeenCalled();
-    });
-
     it("auto-rolls when pool reaches max", async () => {
       mockSettings.set("diceCount", 5);
       mockRollResults = [2, 3, 4, 5, 6, 1];
-      await api.addDie();
+      await api.add();
+      expect((game as any).settings.set).toHaveBeenCalledWith(
+        "tension-pool-2", "diceCount", 6
+      );
       expect((game as any).settings.set).toHaveBeenCalledWith(
         "tension-pool-2", "diceCount", 0
       );
     });
+
+    it("auto-rolls and adds when pool is already full", async () => {
+      mockSettings.set("diceCount", 6);
+      mockRollResults = [2, 3, 4, 5, 6, 1];
+      await api.add();
+      expect((game as any).settings.set).toHaveBeenCalledWith("tension-pool-2", "diceCount", 0);
+      expect((game as any).settings.set).toHaveBeenCalledWith("tension-pool-2", "diceCount", 1);
+    });
+
+    it("adds multiple dice", async () => {
+      await api.add(3);
+      expect((game as any).settings.set).toHaveBeenCalledWith(
+        "tension-pool-2", "diceCount", 3
+      );
+    });
+
+    it("handles overflow by rolling and continuing", async () => {
+      mockSettings.set("poolSize", 6);
+      mockRollResults = [2, 3, 4, 5, 6, 1];
+      await api.add(8);
+      expect((game as any).settings.set).toHaveBeenCalledWith("tension-pool-2", "diceCount", 6);
+      expect((game as any).settings.set).toHaveBeenCalledWith("tension-pool-2", "diceCount", 0);
+      expect((game as any).settings.set).toHaveBeenCalledWith("tension-pool-2", "diceCount", 2);
+    });
+
+    it("clamps count to 50", async () => {
+      mockSettings.set("poolSize", 100);
+      await api.add(999);
+      expect((game as any).settings.set).toHaveBeenCalledWith(
+        "tension-pool-2", "diceCount", 50
+      );
+    });
+
+    it("does nothing for count <= 0", async () => {
+      await api.add(0);
+      expect((game as any).settings.set).not.toHaveBeenCalled();
+    });
   });
 
-  describe("removeDie", () => {
-    it("decrements dice count by 1", async () => {
+  describe("remove", () => {
+    it("removes 1 die by default", async () => {
       mockSettings.set("diceCount", 3);
-      await api.removeDie();
+      await api.remove();
       expect((game as any).settings.set).toHaveBeenCalledWith(
         "tension-pool-2", "diceCount", 2
       );
@@ -142,7 +176,29 @@ describe("Tension Pool API", () => {
 
     it("does nothing when pool is empty", async () => {
       mockSettings.set("diceCount", 0);
-      await api.removeDie();
+      await api.remove();
+      expect((game as any).settings.set).not.toHaveBeenCalled();
+    });
+
+    it("removes multiple dice", async () => {
+      mockSettings.set("diceCount", 5);
+      await api.remove(3);
+      expect((game as any).settings.set).toHaveBeenCalledWith(
+        "tension-pool-2", "diceCount", 2
+      );
+    });
+
+    it("floors at 0", async () => {
+      mockSettings.set("diceCount", 2);
+      await api.remove(10);
+      expect((game as any).settings.set).toHaveBeenCalledWith(
+        "tension-pool-2", "diceCount", 0
+      );
+    });
+
+    it("does nothing for count <= 0", async () => {
+      mockSettings.set("diceCount", 5);
+      await api.remove(0);
       expect((game as any).settings.set).not.toHaveBeenCalled();
     });
   });
@@ -176,63 +232,6 @@ describe("Tension Pool API", () => {
       expect((game as any).settings.set).toHaveBeenCalledWith(
         "tension-pool-2", "diceCount", 0
       );
-    });
-  });
-
-  describe("bulkAdd", () => {
-    it("adds multiple dice", async () => {
-      mockSettings.set("diceCount", 0);
-      await api.bulkAdd(3);
-      expect((game as any).settings.set).toHaveBeenCalledWith(
-        "tension-pool-2", "diceCount", 3
-      );
-    });
-
-    it("handles overflow by rolling and continuing", async () => {
-      mockSettings.set("diceCount", 0);
-      mockSettings.set("poolSize", 6);
-      mockRollResults = [2, 3, 4, 5, 6, 1];
-      await api.bulkAdd(8);
-      expect((game as any).settings.set).toHaveBeenCalledWith("tension-pool-2", "diceCount", 6);
-      expect((game as any).settings.set).toHaveBeenCalledWith("tension-pool-2", "diceCount", 0);
-      expect((game as any).settings.set).toHaveBeenCalledWith("tension-pool-2", "diceCount", 2);
-    });
-
-    it("clamps count to 50", async () => {
-      mockSettings.set("diceCount", 0);
-      mockSettings.set("poolSize", 100);
-      await api.bulkAdd(999);
-      expect((game as any).settings.set).toHaveBeenCalledWith(
-        "tension-pool-2", "diceCount", 50
-      );
-    });
-
-    it("does nothing for count <= 0", async () => {
-      await api.bulkAdd(0);
-      expect((game as any).settings.set).not.toHaveBeenCalled();
-    });
-  });
-
-  describe("bulkRemove", () => {
-    it("removes multiple dice", async () => {
-      mockSettings.set("diceCount", 5);
-      await api.bulkRemove(3);
-      expect((game as any).settings.set).toHaveBeenCalledWith(
-        "tension-pool-2", "diceCount", 2
-      );
-    });
-
-    it("floors at 0", async () => {
-      mockSettings.set("diceCount", 2);
-      await api.bulkRemove(10);
-      expect((game as any).settings.set).toHaveBeenCalledWith(
-        "tension-pool-2", "diceCount", 0
-      );
-    });
-
-    it("does nothing for count <= 0", async () => {
-      await api.bulkRemove(0);
-      expect((game as any).settings.set).not.toHaveBeenCalled();
     });
   });
 

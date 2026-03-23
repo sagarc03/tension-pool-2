@@ -169,12 +169,10 @@ const api = game.modules.get("tension-pool-2")?.api;
 
 | Method | Description |
 |---|---|
-| `api.addDie()` | Add one die to the pool (auto-rolls if full) |
-| `api.removeDie()` | Remove one die from the pool |
+| `api.add(count?)` | Add dice to the pool (default 1, handles overflow/auto-roll) |
+| `api.remove(count?)` | Remove dice from the pool (default 1, floors at 0) |
 | `api.roll()` | Roll the current pool and clear it (rolls 1 die if empty) |
 | `api.clear()` | Clear the pool without rolling |
-| `api.bulkAdd(count)` | Add multiple dice (handles overflow/auto-roll) |
-| `api.bulkRemove(count)` | Remove multiple dice (floors at 0) |
 | `api.customRoll(count)` | Roll any number of tension dice without affecting the pool |
 | `api.getDiceCount()` | Get the current number of dice in the pool |
 | `api.getPoolSize()` | Get the configured maximum pool size |
@@ -182,7 +180,7 @@ const api = game.modules.get("tension-pool-2")?.api;
 **Example macro — add a die:**
 
 ```js
-game.modules.get("tension-pool-2")?.api?.addDie();
+game.modules.get("tension-pool-2")?.api?.add();
 ```
 
 **Example macro — roll 10 tension dice:**

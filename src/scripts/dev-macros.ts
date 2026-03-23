@@ -10,11 +10,11 @@ interface DevMacroDef {
 const macros: DevMacroDef[] = [
   {
     name: "TP: Add Die",
-    command: `game.modules.get("tension-pool-2")?.api?.addDie();`,
+    command: `game.modules.get("tension-pool-2")?.api?.add();`,
   },
   {
     name: "TP: Remove Die",
-    command: `game.modules.get("tension-pool-2")?.api?.removeDie();`,
+    command: `game.modules.get("tension-pool-2")?.api?.remove();`,
   },
   {
     name: "TP: Roll Pool",
@@ -25,12 +25,12 @@ const macros: DevMacroDef[] = [
     command: `game.modules.get("tension-pool-2")?.api?.clear();`,
   },
   {
-    name: "TP: Bulk Add (3)",
-    command: `game.modules.get("tension-pool-2")?.api?.bulkAdd(3);`,
+    name: "TP: Add (3)",
+    command: `game.modules.get("tension-pool-2")?.api?.add(3);`,
   },
   {
-    name: "TP: Bulk Remove (2)",
-    command: `game.modules.get("tension-pool-2")?.api?.bulkRemove(2);`,
+    name: "TP: Remove (2)",
+    command: `game.modules.get("tension-pool-2")?.api?.remove(2);`,
   },
   {
     name: "TP: Custom Roll (4)",

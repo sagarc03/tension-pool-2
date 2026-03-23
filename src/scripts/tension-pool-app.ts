@@ -197,11 +197,11 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
   }
 
   static async _onAddDie(this: TensionPoolApp) {
-    await TensionPoolApp._getAPI().addDie();
+    await TensionPoolApp._getAPI().add();
   }
 
   static async _onRemoveDie(this: TensionPoolApp) {
-    await TensionPoolApp._getAPI().removeDie();
+    await TensionPoolApp._getAPI().remove();
   }
 
   static async _onRollPool(this: TensionPoolApp) {
@@ -231,7 +231,7 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
       },
     });
     if (!input || input <= 0) return;
-    await TensionPoolApp._getAPI().bulkAdd(input);
+    await TensionPoolApp._getAPI().add(input);
   }
 
   static async _onCustomRoll(this: TensionPoolApp) {
