@@ -55,5 +55,7 @@
   "TENSION_POOL.Settings.RollVisibility.Name": "Roll Visibility",
   "TENSION_POOL.Settings.RollVisibility.Hint": "Choose whether tension pool rolls and announcements are visible to all players or only to GMs.",
   "TENSION_POOL.Settings.RollVisibility.Public": "Public",
-  "TENSION_POOL.Settings.RollVisibility.GMOnly": "GM Only"
+  "TENSION_POOL.Settings.RollVisibility.GMOnly": "GM Only",
+  "TENSION_POOL.Settings.ExampleMacros.Name": "Install Example Macros",
+  "TENSION_POOL.Settings.ExampleMacros.Hint": "Create a folder of example macros demonstrating the Tension Pool API. These macros are managed by the module — any edits will be lost when the setting is toggled."
 }

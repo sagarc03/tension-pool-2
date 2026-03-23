@@ -4,6 +4,7 @@ import { registerTensionDie, registerDiceSoNice } from "./tension-die.js";
 import { MODULE_ID, getSetting, setSetting, registerSetting } from "./constants.js";
 import { showBanner } from "./announcements.js";
 import { createTensionPoolAPI } from "./api.js";
+import { syncExampleMacros, deleteExampleMacros } from "./example-macros.js";
 
 function getModuleVersion(): string {
   return (game as Game).modules!.get(MODULE_ID)?.version ?? "0.0.0";
@@ -94,6 +95,24 @@ Hooks.once("init", () => {
     config: true,
     type: String,
     default: "",
+  });
+
+  registerSetting("exampleMacros", {
+    name: "TENSION_POOL.Settings.ExampleMacros.Name",
+    hint: "TENSION_POOL.Settings.ExampleMacros.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    onChange: (enabled: boolean) => {
+      if ((game as Game).user!.isGM) {
+        if (enabled) {
+          syncExampleMacros();
+        } else {
+          deleteExampleMacros();
+        }
+      }
+    },
   });
 
   registerSetting("diceCount", {
@@ -260,6 +279,10 @@ Hooks.on("ready", async () => {
   (game as Game).modules!.get(MODULE_ID)!.api = api;
   // @ts-expect-error — custom hook not in Foundry's HookConfig
   Hooks.callAll("tensionPool2Ready", api);
+
+  if ((game as Game).user!.isGM && getSetting("exampleMacros")) {
+    syncExampleMacros();
+  }
 
   (game as Game).socket!.on(`module.${MODULE_ID}`, (payload: any) => {
     if (payload.action === "announcement") {

@@ -12,6 +12,7 @@ type SettingsMap = {
   addDieSound: string;
   removeDieSound: string;
   rollSound: string;
+  exampleMacros: boolean;
   rollVisibility: string;
   acceptedVersion: string;
 };
