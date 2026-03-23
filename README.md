@@ -161,11 +161,26 @@ if (result?.hasComplication) {
 
 **Example macros:** Enable the "Install Example Macros" setting to create a folder of ready-to-use macros demonstrating each API method.
 
-## Dice So Nice Support
+### Hooks
 
-If [Dice So Nice](https://foundryvtt.com/packages/dice-so-nice/) is installed, tension pool rolls show 3D animated dice. The complication face displays a "!" symbol. The dice use a dark color scheme with black edges.
+Other modules can listen for tension pool events:
 
-## Writing Complication Macros
+```js
+Hooks.on("tensionPoolRolled", (result) => { /* fires on every roll */ });
+Hooks.on("tensionPoolComplication", (result) => { /* fires only on complications */ });
+```
+
+Both hooks receive the same result object described in Complication Macros below.
+
+**Waiting for the API (from another module):**
+
+```js
+Hooks.once("tensionPool2Ready", (api) => {
+  // API is guaranteed to be available here
+});
+```
+
+### Complication Macros
 
 When a complication macro runs, it receives the roll result in `scope.tensionResult`:
 
@@ -185,24 +200,9 @@ ChatMessage.create({
 | `hasComplication` | `true` if any die rolled a 1 |
 | `complicationCount` | How many dice rolled a 1 |
 
-## For Module Developers
+## Dice So Nice Support
 
-Other modules can listen for tension pool events:
-
-```js
-Hooks.on("tensionPoolRolled", (result) => { /* fires on every roll */ });
-Hooks.on("tensionPoolComplication", (result) => { /* fires only on complications */ });
-```
-
-Both hooks receive the same result object described above.
-
-**Waiting for the API (from another module):**
-
-```js
-Hooks.once("tensionPool2Ready", (api) => {
-  // API is guaranteed to be available here
-});
-```
+If [Dice So Nice](https://foundryvtt.com/packages/dice-so-nice/) is installed, tension pool rolls show 3D animated dice. The complication face displays a "!" symbol. The dice use a dark color scheme with black edges.
 
 ## Third-Party Assets
 
