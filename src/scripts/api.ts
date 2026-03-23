@@ -1,7 +1,7 @@
 import { getSetting, setSetting } from "./constants.js";
 import { rollTensionPool } from "./tension-die.js";
 import { announce } from "./announcements.js";
-import { computeBulkAddSteps } from "./bulk-add.js";
+import { computeAddSteps } from "./add-steps.js";
 import type { TensionRollResult } from "./tension-die.js";
 
 export interface TensionPoolAPI {
@@ -66,7 +66,7 @@ export function createTensionPoolAPI(): TensionPoolAPI {
       const clamped = Math.min(count, 50);
       const current = getSetting("diceCount");
       const max = getSetting("poolSize");
-      const steps = computeBulkAddSteps(clamped, current, max);
+      const steps = computeAddSteps(clamped, current, max);
 
       for (const step of steps) {
         if (step.type === "overflow") {

@@ -1,4 +1,4 @@
-export interface BulkAddStep {
+export interface AddStep {
   type: "add" | "overflow";
   added: number;
   newCount: number;
@@ -6,21 +6,21 @@ export interface BulkAddStep {
 }
 
 /**
- * Compute the sequence of steps for a bulk add operation.
+ * Compute the sequence of steps for an add operation.
  * When adding dice would overflow the pool, the pool fills, rolls (overflow),
  * resets to 0, and continues adding the remainder.
  *
  * Returns a list of steps: each is either an "add" (dice added, pool not full)
  * or an "overflow" (pool filled up and should auto-roll).
  */
-export function computeBulkAddSteps(
+export function computeAddSteps(
   count: number,
   currentCount: number,
   max: number,
-): BulkAddStep[] {
+): AddStep[] {
   if (count <= 0 || max <= 0) return [];
 
-  const steps: BulkAddStep[] = [];
+  const steps: AddStep[] = [];
   let remaining = count;
   let current = currentCount;
 
