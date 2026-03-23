@@ -1,8 +1,7 @@
-import { rollTensionPool } from "./tension-die.js";
 import { getSetting, setSetting } from "./constants.js";
-import { announce } from "./announcements.js";
-import { computeBulkAddSteps } from "./bulk-add.js";
 import { buildPoolContext, ICON_THEMES } from "./pool-context.js";
+import { createTensionPoolAPI } from "./api.js";
+import type { TensionPoolAPI } from "./api.js";
 import type { TensionPoolContext } from "./pool-context.js";
 import { clampToViewport, pctToPixels, pixelsToPct } from "./clamp-to-viewport.js";
 
@@ -37,6 +36,14 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
       template: "modules/tension-pool-2/templates/pool.hbs",
     },
   };
+
+  private static _api: TensionPoolAPI | null = null;
+  private static _getAPI(): TensionPoolAPI {
+    if (!TensionPoolApp._api) {
+      TensionPoolApp._api = createTensionPoolAPI();
+    }
+    return TensionPoolApp._api;
+  }
 
   private _previousDiceCount: number = -1;
   private _renderDebounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -190,47 +197,29 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
   }
 
   static async _onAddDie(this: TensionPoolApp) {
-    const current = getSetting("diceCount");
-    const max = getSetting("poolSize");
-    const newCount = current + 1;
-
-    if (newCount > max) return;
-
-    await setSetting("diceCount", newCount);
-
-    // Auto-roll when pool is full
-    if (newCount >= max) {
-      await announce("break", newCount, max);
-      await TensionPoolApp._rollAndClear(max);
-    } else {
-      await announce("rise", newCount, max);
-    }
+    await TensionPoolApp._getAPI().addDie();
   }
 
   static async _onRemoveDie(this: TensionPoolApp) {
-    const current = getSetting("diceCount");
-    if (current > 0) {
-      const max = getSetting("poolSize");
-      await setSetting("diceCount", current - 1);
-      await announce("ease", current - 1, max);
-    }
+    await TensionPoolApp._getAPI().removeDie();
   }
 
   static async _onRollPool(this: TensionPoolApp) {
-    const current = getSetting("diceCount");
-    const max = getSetting("poolSize");
-    await announce("break", current, max);
-    await TensionPoolApp._rollAndClear(Math.max(current, 1));
+    await TensionPoolApp._getAPI().roll();
   }
 
   static async _onClearPool(this: TensionPoolApp) {
-    const max = getSetting("poolSize");
-    await announce("fade", 0, max);
-    await setSetting("diceCount", 0);
+    await TensionPoolApp._getAPI().clear();
+  }
+
+  static async _onTogglePool(this: TensionPoolApp) {
+    const current = getSetting("collapsed");
+    const next = !current;
+    this.element?.classList.toggle("tp-collapsed", next);
+    await setSetting("collapsed", next);
   }
 
   static async _onBulkAdd(this: TensionPoolApp) {
-    const max = getSetting("poolSize");
     const input = await foundry.applications.api.DialogV2.prompt({
       window: { title: game.i18n!.localize("TENSION_POOL.BulkAdd.Title") },
       content: `<form><div class="form-group"><label>${game.i18n!.localize("TENSION_POOL.BulkAdd.Label")}</label><input type="number" name="count" value="1" min="1" max="50" autofocus></div></form>`,
@@ -242,28 +231,7 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
       },
     });
     if (!input || input <= 0) return;
-    const current = getSetting("diceCount");
-    const steps = computeBulkAddSteps(Math.min(input, 50), current, max);
-
-    for (const step of steps) {
-      if (step.type === "overflow") {
-        if (step.added > 0) await setSetting("diceCount", step.newCount);
-        await announce("break", step.newCount, max);
-        await TensionPoolApp._rollAndClear(max);
-      } else {
-        await setSetting("diceCount", step.newCount);
-        await announce("rise", step.newCount, max);
-      }
-    }
-  }
-
-  static async _onTogglePool(this: TensionPoolApp) {
-    const current = getSetting("collapsed");
-    const next = !current;
-    // Toggle CSS class immediately for instant visual feedback,
-    // then persist to settings (which triggers a full re-render in the background).
-    this.element?.classList.toggle("tp-collapsed", next);
-    await setSetting("collapsed", next);
+    await TensionPoolApp._getAPI().bulkAdd(input);
   }
 
   static async _onCustomRoll(this: TensionPoolApp) {
@@ -279,13 +247,7 @@ export class TensionPoolApp extends HandlebarsApplicationMixin(ApplicationV2)<Te
       },
     });
     if (input && input > 0) {
-      await announce("break", 0, max);
-      await rollTensionPool(Math.min(input, 50));
+      await TensionPoolApp._getAPI().customRoll(input);
     }
-  }
-
-  private static async _rollAndClear(diceCount: number) {
-    await rollTensionPool(diceCount);
-    await setSetting("diceCount", 0);
   }
 }
