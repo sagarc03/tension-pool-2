@@ -4,14 +4,26 @@ import { announce } from "./announcements.js";
 import { computeAddSteps } from "./add-steps.js";
 import type { TensionRollResult } from "./tension-die.js";
 
+export type { TensionRollResult };
+
+export interface AddResult {
+  diceCount: number;
+  rolls: TensionRollResult[];
+}
+
 export interface TensionPoolAPI {
-  add(count?: number): Promise<void>;
+  add(count?: number): Promise<AddResult>;
   remove(count?: number): Promise<void>;
   roll(): Promise<TensionRollResult>;
   clear(): Promise<void>;
   customRoll(count: number): Promise<TensionRollResult>;
   getDiceCount(): number;
   getPoolSize(): number;
+}
+
+function sanitize(value: number): number {
+  if (!Number.isFinite(value)) return 0;
+  return Math.floor(value);
 }
 
 export function createTensionPoolAPI(): TensionPoolAPI {
@@ -22,26 +34,31 @@ export function createTensionPoolAPI(): TensionPoolAPI {
   }
 
   return {
-    async add(count: number = 1): Promise<void> {
-      if (count <= 0) return;
+    async add(count: number = 1): Promise<AddResult> {
+      count = sanitize(count);
+      if (count <= 0) return { diceCount: getSetting("diceCount"), rolls: [] };
       const clamped = Math.min(count, 50);
       const current = getSetting("diceCount");
       const max = getSetting("poolSize");
       const steps = computeAddSteps(clamped, current, max);
+      const rolls: TensionRollResult[] = [];
 
       for (const step of steps) {
         if (step.type === "overflow") {
           if (step.added > 0) await setSetting("diceCount", step.newCount);
           await announce("break", step.newCount, max);
-          await rollAndClear(max);
+          rolls.push(await rollAndClear(max));
         } else {
           await setSetting("diceCount", step.newCount);
           await announce("rise", step.newCount, max);
         }
       }
+
+      return { diceCount: getSetting("diceCount"), rolls };
     },
 
     async remove(count: number = 1): Promise<void> {
+      count = sanitize(count);
       if (count <= 0) return;
       const current = getSetting("diceCount");
       if (current <= 0) return;
@@ -65,9 +82,10 @@ export function createTensionPoolAPI(): TensionPoolAPI {
     },
 
     async customRoll(count: number): Promise<TensionRollResult> {
+      count = sanitize(count);
       const max = getSetting("poolSize");
       const clamped = Math.min(Math.max(count, 1), 50);
-      await announce("break", 0, max);
+      await announce("break", clamped, max);
       return rollTensionPool(clamped);
     },
 

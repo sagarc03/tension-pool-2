@@ -109,58 +109,71 @@ describe("Tension Pool API", () => {
 
   describe("add", () => {
     it("adds 1 die by default", async () => {
-      await api.add();
-      expect((game as any).settings.set).toHaveBeenCalledWith(
-        "tension-pool-2", "diceCount", 1
-      );
+      const result = await api.add();
+      expect(result.diceCount).toBe(1);
+      expect(result.rolls).toEqual([]);
     });
 
     it("auto-rolls when pool reaches max", async () => {
       mockSettings.set("diceCount", 5);
       mockRollResults = [2, 3, 4, 5, 6, 1];
-      await api.add();
-      expect((game as any).settings.set).toHaveBeenCalledWith(
-        "tension-pool-2", "diceCount", 6
-      );
-      expect((game as any).settings.set).toHaveBeenCalledWith(
-        "tension-pool-2", "diceCount", 0
-      );
+      const result = await api.add();
+      expect(result.diceCount).toBe(0);
+      expect(result.rolls).toHaveLength(1);
+      expect(result.rolls[0].hasComplication).toBe(true);
     });
 
     it("auto-rolls and adds when pool is already full", async () => {
       mockSettings.set("diceCount", 6);
       mockRollResults = [2, 3, 4, 5, 6, 1];
-      await api.add();
-      expect((game as any).settings.set).toHaveBeenCalledWith("tension-pool-2", "diceCount", 0);
-      expect((game as any).settings.set).toHaveBeenCalledWith("tension-pool-2", "diceCount", 1);
+      const result = await api.add();
+      expect(result.diceCount).toBe(1);
+      expect(result.rolls).toHaveLength(1);
     });
 
     it("adds multiple dice", async () => {
-      await api.add(3);
-      expect((game as any).settings.set).toHaveBeenCalledWith(
-        "tension-pool-2", "diceCount", 3
-      );
+      const result = await api.add(3);
+      expect(result.diceCount).toBe(3);
+      expect(result.rolls).toEqual([]);
     });
 
     it("handles overflow by rolling and continuing", async () => {
       mockSettings.set("poolSize", 6);
       mockRollResults = [2, 3, 4, 5, 6, 1];
-      await api.add(8);
-      expect((game as any).settings.set).toHaveBeenCalledWith("tension-pool-2", "diceCount", 6);
-      expect((game as any).settings.set).toHaveBeenCalledWith("tension-pool-2", "diceCount", 0);
-      expect((game as any).settings.set).toHaveBeenCalledWith("tension-pool-2", "diceCount", 2);
+      const result = await api.add(8);
+      expect(result.diceCount).toBe(2);
+      expect(result.rolls).toHaveLength(1);
     });
 
     it("clamps count to 50", async () => {
       mockSettings.set("poolSize", 100);
-      await api.add(999);
-      expect((game as any).settings.set).toHaveBeenCalledWith(
-        "tension-pool-2", "diceCount", 50
-      );
+      const result = await api.add(999);
+      expect(result.diceCount).toBe(50);
     });
 
     it("does nothing for count <= 0", async () => {
-      await api.add(0);
+      const result = await api.add(0);
+      expect(result.diceCount).toBe(0);
+      expect(result.rolls).toEqual([]);
+      expect((game as any).settings.set).not.toHaveBeenCalled();
+    });
+
+    it("floors fractional counts", async () => {
+      const result = await api.add(2.7);
+      expect(result.diceCount).toBe(2);
+    });
+
+    it("treats NaN as no-op", async () => {
+      const result = await api.add(NaN);
+      expect(result.diceCount).toBe(0);
+      expect(result.rolls).toEqual([]);
+      expect((game as any).settings.set).not.toHaveBeenCalled();
+    });
+
+    it("treats Infinity as no-op", async () => {
+      const result = await api.add(Infinity);
+      expect(result.diceCount).toBe(0);
+      expect(result.rolls).toEqual([]);
       expect((game as any).settings.set).not.toHaveBeenCalled();
     });
   });
@@ -199,6 +212,20 @@ describe("Tension Pool API", () => {
     it("does nothing for count <= 0", async () => {
       mockSettings.set("diceCount", 5);
       await api.remove(0);
+      expect((game as any).settings.set).not.toHaveBeenCalled();
+    });
+
+    it("floors fractional counts", async () => {
+      mockSettings.set("diceCount", 5);
+      await api.remove(2.9);
+      expect((game as any).settings.set).toHaveBeenCalledWith(
+        "tension-pool-2", "diceCount", 3
+      );
+    });
+
+    it("treats NaN as no-op", async () => {
+      mockSettings.set("diceCount", 5);
+      await api.remove(NaN);
       expect((game as any).settings.set).not.toHaveBeenCalled();
     });
   });
@@ -256,6 +283,18 @@ describe("Tension Pool API", () => {
       mockRollResults = [3];
       const result = await api.customRoll(0);
       expect(result.diceCount).toBe(1);
+    });
+
+    it("treats NaN as 1", async () => {
+      mockRollResults = [3];
+      const result = await api.customRoll(NaN);
+      expect(result.diceCount).toBe(1);
+    });
+
+    it("floors fractional counts", async () => {
+      mockRollResults = [2, 3, 4];
+      const result = await api.customRoll(3.8);
+      expect(result.diceCount).toBe(3);
     });
   });
 
