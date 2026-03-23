@@ -104,7 +104,13 @@ These settings affect all players in the world.
 
 **Dice Size** — What type of die to roll. Options: d4, d6, d8, d10, d12, d20. Default: d6. A complication is always a roll of 1, so larger dice mean lower odds per die. Changing this requires a browser refresh.
 
+**Roll Visibility** — Whether tension pool roll results are visible to everyone or only the GM. Options: Public, GM Only. Default: Public. When set to GM Only, players see an ominous "The GM rolls in secret..." message instead of the actual result.
+
 **Complication Macro** — Enter the name of a macro to automatically run when a complication is rolled. You can enter multiple macro names separated by commas (e.g. `Play Alert, Random Encounter`). The macro receives `scope.tensionResult` with the roll data. Leave blank to disable.
+
+**Sound Enabled** — Toggle sound effects on or off. Default: on.
+
+**Add Die Sound** / **Remove Die Sound** / **Roll Sound** — Custom audio files for each pool action. Accepts any audio file Foundry can play. Defaults are included with the module.
 
 ### Player Settings (client-level)
 
@@ -152,6 +158,49 @@ Hooks.on("tensionPoolComplication", (result) => { /* fires only on complications
 ```
 
 Both hooks receive the same result object described above.
+
+### Macro API
+
+All pool actions are available via the module API. Use these in Foundry macros or from other modules:
+
+```js
+const api = game.modules.get("tension-pool-2")?.api;
+```
+
+| Method | Description |
+|---|---|
+| `api.addDie()` | Add one die to the pool (auto-rolls if full) |
+| `api.removeDie()` | Remove one die from the pool |
+| `api.roll()` | Roll the current pool and clear it (rolls 1 die if empty) |
+| `api.clear()` | Clear the pool without rolling |
+| `api.bulkAdd(count)` | Add multiple dice (handles overflow/auto-roll) |
+| `api.bulkRemove(count)` | Remove multiple dice (floors at 0) |
+| `api.customRoll(count)` | Roll any number of tension dice without affecting the pool |
+| `api.getDiceCount()` | Get the current number of dice in the pool |
+| `api.getPoolSize()` | Get the configured maximum pool size |
+
+**Example macro — add a die:**
+
+```js
+game.modules.get("tension-pool-2")?.api?.addDie();
+```
+
+**Example macro — roll 10 tension dice:**
+
+```js
+const result = await game.modules.get("tension-pool-2")?.api?.customRoll(10);
+if (result?.hasComplication) {
+  ui.notifications.warn(`${result.complicationCount} complication(s)!`);
+}
+```
+
+**Waiting for the API (from another module):**
+
+```js
+Hooks.once("tensionPool2Ready", (api) => {
+  // API is guaranteed to be available here
+});
+```
 
 ## Third-Party Assets
 
