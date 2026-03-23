@@ -257,6 +257,7 @@ Hooks.on("ready", async () => {
   const api = createTensionPoolAPI();
   // @ts-expect-error — Foundry module API convention not in type definitions
   (game as Game).modules!.get(MODULE_ID)!.api = api;
+  // @ts-expect-error — custom hook not in Foundry's HookConfig
   Hooks.callAll("tensionPool2Ready", api);
 
   (game as Game).socket!.on(`module.${MODULE_ID}`, (payload: any) => {
