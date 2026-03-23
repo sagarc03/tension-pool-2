@@ -11,6 +11,7 @@ function getModuleVersion(): string {
 
 if (import.meta.env.DEV) {
   import("./quench.js");
+  import("./dev-macros.js");
 }
 
 let poolApp: TensionPoolApp | null = null;
