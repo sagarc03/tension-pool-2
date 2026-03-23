@@ -3,6 +3,7 @@ import { TensionPoolApp, ICON_THEMES } from "./tension-pool-app.js";
 import { registerTensionDie, registerDiceSoNice } from "./tension-die.js";
 import { MODULE_ID, getSetting, setSetting, registerSetting } from "./constants.js";
 import { showBanner } from "./announcements.js";
+import { createTensionPoolAPI } from "./api.js";
 
 function getModuleVersion(): string {
   return (game as Game).modules!.get(MODULE_ID)?.version ?? "0.0.0";
@@ -252,6 +253,11 @@ Hooks.on("ready", async () => {
 
   poolApp = new TensionPoolApp();
   poolApp.render({ force: true });
+
+  const api = createTensionPoolAPI();
+  // @ts-expect-error — Foundry module API convention not in type definitions
+  (game as Game).modules!.get(MODULE_ID)!.api = api;
+  Hooks.callAll("tensionPool2Ready", api);
 
   (game as Game).socket!.on(`module.${MODULE_ID}`, (payload: any) => {
     if (payload.action === "announcement") {
