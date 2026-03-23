@@ -126,6 +126,41 @@ Each player can customize these independently.
 
 Each player sees their own chosen theme, including in chat messages.
 
+## Macro API
+
+All pool actions are available via the module API. Use these in Foundry macros or from other modules:
+
+```js
+const api = game.modules.get("tension-pool-2")?.api;
+```
+
+| Method | Description |
+|---|---|
+| `api.add(count?)` | Add dice to the pool (default 1, handles overflow/auto-roll) |
+| `api.remove(count?)` | Remove dice from the pool (default 1, floors at 0) |
+| `api.roll()` | Roll the current pool and clear it — always rolls at least 1 die |
+| `api.clear()` | Clear the pool without rolling |
+| `api.customRoll(count)` | Roll any number of tension dice without affecting the pool — always rolls at least 1 |
+| `api.getDiceCount()` | Get the current number of dice in the pool |
+| `api.getPoolSize()` | Get the configured maximum pool size |
+
+**Example macro — add a die:**
+
+```js
+game.modules.get("tension-pool-2")?.api?.add();
+```
+
+**Example macro — roll 10 tension dice:**
+
+```js
+const result = await game.modules.get("tension-pool-2")?.api?.customRoll(10);
+if (result?.hasComplication) {
+  ui.notifications.warn(`${result.complicationCount} complication(s)!`);
+}
+```
+
+**Example macros:** Enable the "Install Example Macros" setting to create a folder of ready-to-use macros demonstrating each API method.
+
 ## Dice So Nice Support
 
 If [Dice So Nice](https://foundryvtt.com/packages/dice-so-nice/) is installed, tension pool rolls show 3D animated dice. The complication face displays a "!" symbol. The dice use a dark color scheme with black edges.
@@ -161,39 +196,6 @@ Hooks.on("tensionPoolComplication", (result) => { /* fires only on complications
 
 Both hooks receive the same result object described above.
 
-### Macro API
-
-All pool actions are available via the module API. Use these in Foundry macros or from other modules:
-
-```js
-const api = game.modules.get("tension-pool-2")?.api;
-```
-
-| Method | Description |
-|---|---|
-| `api.add(count?)` | Add dice to the pool (default 1, handles overflow/auto-roll) |
-| `api.remove(count?)` | Remove dice from the pool (default 1, floors at 0) |
-| `api.roll()` | Roll the current pool and clear it — always rolls at least 1 die |
-| `api.clear()` | Clear the pool without rolling |
-| `api.customRoll(count)` | Roll any number of tension dice without affecting the pool — always rolls at least 1 |
-| `api.getDiceCount()` | Get the current number of dice in the pool |
-| `api.getPoolSize()` | Get the configured maximum pool size |
-
-**Example macro — add a die:**
-
-```js
-game.modules.get("tension-pool-2")?.api?.add();
-```
-
-**Example macro — roll 10 tension dice:**
-
-```js
-const result = await game.modules.get("tension-pool-2")?.api?.customRoll(10);
-if (result?.hasComplication) {
-  ui.notifications.warn(`${result.complicationCount} complication(s)!`);
-}
-```
-
 **Waiting for the API (from another module):**
 
 ```js
@@ -201,8 +203,6 @@ Hooks.once("tensionPool2Ready", (api) => {
   // API is guaranteed to be available here
 });
 ```
-
-**Example macros:** Enable the "Install Example Macros" setting to create a folder of ready-to-use macros demonstrating each API method.
 
 ## Third-Party Assets
 
