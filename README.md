@@ -106,7 +106,14 @@ These settings affect all players in the world.
 
 **Roll Visibility** — Whether tension pool roll results are visible to everyone or only the GM. Options: Public, GM Only. Default: Public. When set to GM Only, players see an ominous "The GM rolls in secret..." message instead of the actual result.
 
-**Complication Macro** — Enter the name of a macro to automatically run when a complication is rolled. You can enter multiple macro names separated by commas (e.g. `Play Alert, Random Encounter`). The macro receives `scope.tensionResult` with the roll data. Leave blank to disable.
+**Complication Macro** — Enter the name of a macro to automatically run when a complication is rolled. You can enter multiple macro names separated by commas (e.g. `Play Alert, Random Encounter`). Leave blank to disable. The macro receives the roll result in `scope.tensionResult`:
+
+```js
+const { diceCount, results, hasComplication, complicationCount } = scope.tensionResult;
+ChatMessage.create({
+  content: `<h3>Something stirs...</h3><p>${complicationCount} complication(s) from ${diceCount} dice!</p>`
+});
+```
 
 **Sound Enabled** — Toggle sound effects on or off. Default: on.
 
@@ -170,7 +177,14 @@ Hooks.on("tensionPoolRolled", (result) => { /* fires on every roll */ });
 Hooks.on("tensionPoolComplication", (result) => { /* fires only on complications */ });
 ```
 
-Both hooks receive the same result object described in Complication Macros below.
+Both hooks receive a result object:
+
+| Field | Description |
+|---|---|
+| `diceCount` | How many dice were rolled |
+| `results` | Array of each die's value, sorted |
+| `hasComplication` | `true` if any die rolled a 1 |
+| `complicationCount` | How many dice rolled a 1 |
 
 **Waiting for the API (from another module):**
 
@@ -179,26 +193,6 @@ Hooks.once("tensionPool2Ready", (api) => {
   // API is guaranteed to be available here
 });
 ```
-
-### Complication Macros
-
-When a complication macro runs, it receives the roll result in `scope.tensionResult`:
-
-```js
-const { diceCount, results, hasComplication, complicationCount } = scope.tensionResult;
-
-// Example: announce complications in chat
-ChatMessage.create({
-  content: `<h3>Something stirs...</h3><p>${complicationCount} complication(s) from ${diceCount} dice!</p>`
-});
-```
-
-| Field | Description |
-|---|---|
-| `diceCount` | How many dice were rolled |
-| `results` | Array of each die's value, sorted |
-| `hasComplication` | `true` if any die rolled a 1 |
-| `complicationCount` | How many dice rolled a 1 |
 
 ## Dice So Nice Support
 
