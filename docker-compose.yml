@@ -1,6 +1,6 @@
 services:
   foundry-init:
-    image: felddy/foundryvtt:release
+    image: felddy/foundryvtt:${FOUNDRY_VERSION:-release}
     entrypoint:
       - sh
       - -c
@@ -10,7 +10,7 @@ services:
       - foundry_data:/data
 
   foundry:
-    image: felddy/foundryvtt:release
+    image: felddy/foundryvtt:${FOUNDRY_VERSION:-release}
     depends_on:
       foundry-init:
         condition: service_completed_successfully
